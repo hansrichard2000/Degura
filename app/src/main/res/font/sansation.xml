@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<font-family xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="400"
+        android:font="@font/sansation_regular"
+        tools:targetApi="o" />
+
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="300"
+        android:font="@font/sansation_light"
+        tools:targetApi="o" />
+
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="700"
+        android:font="@font/sansation_bold"
+        tools:targetApi="o" />
+
+    <font
+        android:fontStyle="italic"
+        android:fontWeight="400"
+        android:font="@font/sansation_italic"
+        tools:targetApi="o" />
+
+    <font
+        android:fontStyle="italic"
+        android:fontWeight="300"
+        android:font="@font/sansation_light_italic"
+        tools:targetApi="o" />
+
+    <font
+        android:fontStyle="italic"
+        android:fontWeight="700"
+        android:font="@font/sansation_bold_italic"
+        tools:targetApi="o" />
+
+</font-family>
