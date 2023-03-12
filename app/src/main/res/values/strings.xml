@@ -14,4 +14,9 @@
     <string name="app_detection_title">Hasil Gambar</string>
     <string name="fish_eye_text">Mata Ikan</string>
     <string name="fish_gill_text">Insang Ikan</string>
+    <string name="detection_text">Deteksi</string>
+    <string name="delete_img_text">Buang Gambar</string>
+    <string name="app_result_title">Hasil Prediksi Kesegaran</string>
+    <string name="fresh_eye_status">Status Kesegaran Mata:</string>
+    <string name="fish_gill_status">Status Kesegaran Insang:</string>
 </resources>
