@@ -8,7 +8,7 @@
     tools:context=".view.main.FishEyeFragment">
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/textLangkah"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -21,17 +21,17 @@
         android:textSize="32sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/first_title_page" />
+        app:layout_constraintTop_toBottomOf="@+id/second_title_page" />
 
     <TextView
-        android:id="@+id/first_title_page"
+        android:id="@+id/second_title_page"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="32dp"
         android:fontFamily="@font/sansation_regular"
-        android:text="@string/app_main_title_eye"
+        android:text="@string/app_main_title_gill"
         android:textColor="@color/white"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -39,20 +39,20 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/textView6"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="24dp"
         android:fontFamily="@font/sansation_bold"
-        android:text="1"
+        android:text="2"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="64sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        app:layout_constraintTop_toBottomOf="@+id/textLangkah" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
@@ -62,17 +62,17 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4">
+        app:layout_constraintTop_toBottomOf="@+id/textView6">
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/text_gill_instruct"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="16dp"
             android:fontFamily="@font/sansation_regular"
-            android:text="@string/fish_eye_instruct"
+            android:text="@string/fish_gill_instruct"
             android:textColor="@color/black"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -80,7 +80,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/btn_gallery_eye"
+            android:id="@+id/btn_gallery_gill"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="56dp"
@@ -92,10 +92,10 @@
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView5" />
+            app:layout_constraintTop_toBottomOf="@+id/text_gill_instruct" />
 
         <Button
-            android:id="@+id/btn_camera_eye"
+            android:id="@+id/btn_camera_gill"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="56dp"
@@ -107,6 +107,21 @@
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_gallery_eye" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_gallery_gill" />
+
+        <Button
+            android:id="@+id/btn_back_gill"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="56dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="56dp"
+            android:background="@drawable/orange_btn_background"
+            android:text="@string/btn_back"
+            android:textSize="16sp"
+            android:theme="@style/OrangeButtonTheme"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_camera_gill" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
