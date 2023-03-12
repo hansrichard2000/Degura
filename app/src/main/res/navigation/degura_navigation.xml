@@ -9,5 +9,44 @@
         android:id="@+id/splashFragment"
         android:name="com.uc.degura.view.splash.SplashFragment"
         android:label="fragment_splash"
-        tools:layout="@layout/fragment_splash" />
+        tools:layout="@layout/fragment_splash" >
+        <action
+            android:id="@+id/action_splashFragment_to_fishEyeFragment"
+            app:destination="@id/fishEyeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detectionFragment"
+        android:name="com.uc.degura.view.detection.DetectionFragment"
+        android:label="fragment_detection"
+        tools:layout="@layout/fragment_detection" >
+        <action
+            android:id="@+id/action_detectionFragment_to_resultsFragment"
+            app:destination="@id/resultsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/fishEyeFragment"
+        android:name="com.uc.degura.view.main.FishEyeFragment"
+        android:label="fragment_fish_eye"
+        tools:layout="@layout/fragment_fish_eye" >
+        <action
+            android:id="@+id/action_fishEyeFragment_to_fishGillFragment"
+            app:destination="@id/fishGillFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/fishGillFragment"
+        android:name="com.uc.degura.view.main.FishGillFragment"
+        android:label="FishGillFragment" >
+        <action
+            android:id="@+id/action_fishGillFragment_to_detectionFragment"
+            app:destination="@id/detectionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/resultsFragment"
+        android:name="com.uc.degura.view.result.ResultsFragment"
+        android:label="fragment_results"
+        tools:layout="@layout/fragment_results" >
+        <action
+            android:id="@+id/action_resultsFragment_to_fishEyeFragment"
+            app:destination="@id/fishEyeFragment" />
+    </fragment>
 </navigation>

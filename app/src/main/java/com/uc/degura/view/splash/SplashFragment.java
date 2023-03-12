@@ -5,6 +5,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -34,14 +36,10 @@ public class SplashFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-//        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-//            NavDirections action;
-//            if (helper.getAccessToken().isEmpty()){
-//                action = SplashFragmentDirections.actionSplashFragmentToLoginFragment();
-//            } else{
-//                action = SplashFragmentDirections.actionSplashFragmentToBerandaFragment();
-//            }
-//            Navigation.findNavController(view).navigate(action);
-//        }, splashtime);
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            NavDirections action;
+            action = SplashFragmentDirections.actionSplashFragmentToFishEyeFragment();
+            Navigation.findNavController(view).navigate(action);
+        }, splashtime);
     }
 }
