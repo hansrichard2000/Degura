@@ -11,4 +11,7 @@
     <string name="phone_gallery">Galeri</string>
     <string name="phone_camera">Kamera</string>
     <string name="btn_back">Kembali</string>
+    <string name="app_detection_title">Hasil Gambar</string>
+    <string name="fish_eye_text">Mata Ikan</string>
+    <string name="fish_gill_text">Insang Ikan</string>
 </resources>
