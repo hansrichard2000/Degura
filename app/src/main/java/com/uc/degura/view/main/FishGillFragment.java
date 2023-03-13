@@ -44,7 +44,8 @@ public class FishGillFragment extends Fragment {
     @BindView(R.id.btn_gallery_gill)
     Button btn_gallery_gill;
 
-
+    @BindView(R.id.btn_back_gill)
+    Button btn_back_gill;
 
     private static final String TAG = "FishGillFragment";
 
