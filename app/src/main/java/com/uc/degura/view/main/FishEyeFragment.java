@@ -10,6 +10,7 @@ import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -28,6 +29,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.uc.degura.R;
 
@@ -48,10 +50,35 @@ public class FishEyeFragment extends Fragment {
     @BindView(R.id.btn_gallery_eye)
     Button btn_gallery_eye;
 
+    private long backPressedTime;
+
+    private Toast backToast;
+
     private static final String TAG = "FishEyeFragment";
 
     public FishEyeFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (backPressedTime + 2000 > System.currentTimeMillis() ){
+                    backToast.cancel();
+                    getActivity().finish();
+                }
+                else{
+                    backToast= Toast.makeText(getContext(), "Press back again to exit", Toast.LENGTH_SHORT);
+                    backToast.show();
+                }
+                backPressedTime = System.currentTimeMillis();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
     @Override
@@ -148,4 +175,6 @@ public class FishEyeFragment extends Fragment {
 
         return fish_eye_uri;
     }
+
+
 }

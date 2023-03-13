@@ -10,14 +10,17 @@ import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.provider.MediaStore;
 import android.util.Log;
@@ -132,6 +135,10 @@ public class FishGillFragment extends Fragment {
             Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             galleryResultLauncher.launch(galleryIntent);
         });
+
+        btn_back_gill.setOnClickListener(v -> {
+            Navigation.findNavController(v).navigateUp();
+        });
     }
 
     private Uri saveImage(Bitmap image, Context context){
@@ -153,4 +160,36 @@ public class FishGillFragment extends Fragment {
 
         return fish_eye_uri;
     }
+
+    private static void deleteCache(Context context){
+        try {
+            File dir = context.getCacheDir();
+            deleteDir(dir);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static boolean deleteDir(File dir) {
+        if (dir != null && dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+            return dir.delete();
+        } else if(dir!= null && dir.isFile()) {
+            return dir.delete();
+        } else {
+            return false;
+        }
+    }
+
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//        deleteCache(getContext());
+//    }
 }
