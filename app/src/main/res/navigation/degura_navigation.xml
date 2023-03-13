@@ -22,6 +22,12 @@
         <action
             android:id="@+id/action_detectionFragment_to_resultsFragment"
             app:destination="@id/resultsFragment" />
+        <argument
+            android:name="fish_eye"
+            app:argType="android.net.Uri" />
+        <argument
+            android:name="fish_gill"
+            app:argType="android.net.Uri" />
     </fragment>
     <fragment
         android:id="@+id/fishEyeFragment"
@@ -39,6 +45,9 @@
         <action
             android:id="@+id/action_fishGillFragment_to_detectionFragment"
             app:destination="@id/detectionFragment" />
+        <argument
+            android:name="fish_eye"
+            app:argType="android.net.Uri" />
     </fragment>
     <fragment
         android:id="@+id/resultsFragment"
