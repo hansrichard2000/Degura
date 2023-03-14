@@ -1,6 +1,9 @@
 package com.uc.degura.view.detection;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.provider.MediaStore;
@@ -16,11 +21,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.uc.degura.R;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.Array;
 import java.util.Arrays;
@@ -42,6 +49,9 @@ public class DetectionFragment extends Fragment {
 
     @BindView(R.id.fish_image_txt)
     TextView fish_image_txt;
+
+    @BindView(R.id.btn_delete_img)
+    Button btn_delete_img;
 
     private FishImageAdapter fishImageAdapter;
 
@@ -97,6 +107,30 @@ public class DetectionFragment extends Fragment {
             }
         });
 
+        btn_delete_img.setOnClickListener(v -> {
+            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
+            alertBuilder.setTitle("Peringatan!");
+            alertBuilder.setMessage("Anda yakin ingin membuang kedua gambar yang sudah Anda ambil?");
+            alertBuilder.setCancelable(true);
+
+            alertBuilder.setPositiveButton("Ya", (DialogInterface.OnClickListener) (dialog, which) -> {
+                NavDirections action;
+                action = DetectionFragmentDirections.actionDetectionFragmentToFishEyeFragment();
+                Navigation.findNavController(v).navigate(action);
+            });
+
+            alertBuilder.setNegativeButton("Tidak", (DialogInterface.OnClickListener) (dialog, which) -> {
+                // If user click no then dialog box is canceled.
+                dialog.cancel();
+            });
+
+            // Create the Alert dialog
+            AlertDialog alertDialog = alertBuilder.create();
+            // Show the Alert Dialog box
+            alertDialog.show();
+
+//            deleteCache(getContext());
+        });
 
     }
 
@@ -129,4 +163,36 @@ public class DetectionFragment extends Fragment {
                 break;
         }
     }
+
+    private static void deleteCache(Context context){
+        try {
+            File dir = new File(context.getCacheDir(), "deguraImages");
+            deleteDir(dir);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static boolean deleteDir(File dir) {
+        if (dir != null && dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+            return dir.delete();
+        } else if(dir!= null && dir.isFile()) {
+            return dir.delete();
+        } else {
+            return false;
+        }
+    }
+
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//        deleteCache(getContext());
+//    }
 }

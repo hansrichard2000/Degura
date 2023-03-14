@@ -163,7 +163,7 @@ public class FishGillFragment extends Fragment {
 
     private static void deleteCache(Context context){
         try {
-            File dir = context.getCacheDir();
+            File dir = new File(context.getCacheDir(), "deguraImages");
             deleteDir(dir);
         }catch (Exception e) {
             e.printStackTrace();
