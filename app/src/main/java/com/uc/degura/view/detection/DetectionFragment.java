@@ -2,9 +2,12 @@ package com.uc.degura.view.detection;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -12,17 +15,22 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.uc.degura.R;
@@ -50,8 +58,13 @@ public class DetectionFragment extends Fragment {
     @BindView(R.id.fish_image_txt)
     TextView fish_image_txt;
 
+    @BindView(R.id.btn_detect)
+    Button btn_detect;
+
     @BindView(R.id.btn_delete_img)
     Button btn_delete_img;
+
+    Dialog progressDialog;
 
     private FishImageAdapter fishImageAdapter;
 
@@ -107,6 +120,26 @@ public class DetectionFragment extends Fragment {
             }
         });
 
+        btn_detect.setOnClickListener(v -> {
+            progressDialog = new Dialog(getActivity(), R.style.DeguraLoadingTheme);
+            View loadingView = LayoutInflater.from(getContext()).inflate(R.layout.loading_screen, null);
+            WindowManager.LayoutParams params = progressDialog.getWindow().getAttributes();
+            params.width = WindowManager.LayoutParams.MATCH_PARENT; // set as full width
+            params.height = WindowManager.LayoutParams.MATCH_PARENT;// set as full heiggt
+            progressDialog.setContentView(loadingView);
+            progressDialog.getWindow().setBackgroundDrawableResource(R.color.transparent_black);
+            progressDialog.getWindow().setGravity(Gravity.CENTER);
+            progressDialog.show();
+            progressDialog.setOnDismissListener(dialog -> {
+                NavDirections action;
+                action = DetectionFragmentDirections.actionDetectionFragmentToResultsFragment();
+                Navigation.findNavController(v).navigate(action);
+            });
+
+            new Handler().postDelayed(() -> progressDialog.dismiss(), 2500);
+
+        });
+
         btn_delete_img.setOnClickListener(v -> {
             AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
             alertBuilder.setTitle("Peringatan!");
@@ -152,14 +185,15 @@ public class DetectionFragment extends Fragment {
 
             case 1 :
                 fish_image_txt.setText(R.string.fish_gill_text);
-                slider1.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.black));
+                slider1.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.transparent_white));
                 slider2.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.degura_white));
                 break;
 
             default:
                 fish_image_txt.setText(R.string.fish_eye_text);
                 slider1.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.degura_white));
-                slider2.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.black));
+                slider2.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.transparent_white));
+
                 break;
         }
     }
