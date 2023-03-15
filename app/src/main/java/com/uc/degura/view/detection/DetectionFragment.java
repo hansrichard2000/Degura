@@ -3,12 +3,14 @@ package com.uc.degura.view.detection;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -33,17 +35,21 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.uc.degura.R;
 import com.uc.degura.env.ImageUtils;
 import com.uc.degura.env.Logger;
+import com.uc.degura.env.Utils;
 import com.uc.degura.tflite.Classifier;
+import com.uc.degura.tflite.YoloV4Classifier;
 import com.uc.degura.tracking.MultiBoxTracker;
 
 import java.io.File;
 import java.io.IOException;
 import java.sql.Array;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -114,8 +120,8 @@ public class DetectionFragment extends Fragment {
     protected int previewWidth = 0;
     protected int previewHeight = 0;
 
-    private Bitmap sourceBitmap;
-    private Bitmap cropBitmap;
+    private Bitmap fish_eye_bitmap;
+    private Bitmap fish_gill_bitmap;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -128,8 +134,8 @@ public class DetectionFragment extends Fragment {
         Log.d(TAG, "Fish Eye Uri Debug: "+fish_eye_uri.toString());
         Log.d(TAG, "Fish Gill Uri Debug: "+fish_gill_uri.toString());
 
-        Bitmap fish_eye_bitmap = getBitmap(fish_eye_uri);
-        Bitmap fish_gill_bitmap = getBitmap(fish_gill_uri);
+        fish_eye_bitmap = getBitmap(fish_eye_uri);
+        fish_gill_bitmap = getBitmap(fish_gill_uri);
 
         List<Bitmap> fish_images_list = Arrays.asList(fish_eye_bitmap, fish_gill_bitmap);
 
@@ -170,19 +176,41 @@ public class DetectionFragment extends Fragment {
 
                 Handler handler = new Handler();
 
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-//                        final List<Classifier.Recognition> results =
-                    }
+                new Thread(() -> {
+                    Log.d(TAG, "Recognize Fish Eye Bitmap Debug: "+fish_eye_bitmap.toString());
+
+                    final List<Classifier.Recognition> fish_eye_results = detector.recognizeImage(fish_eye_bitmap);
+                    final List<Classifier.Recognition> fish_gill_results = detector.recognizeImage(fish_gill_bitmap);
+                    handler.post(() -> handleResult(fish_eye_bitmap, fish_gill_bitmap, fish_eye_results, fish_gill_results));
                 }).start();
 
-                NavDirections action;
-                action = DetectionFragmentDirections.actionDetectionFragmentToResultsFragment();
-                Navigation.findNavController(v).navigate(action);
+//                new Thread(() -> {
+//                    Log.d(TAG, "Recognize Fish Gill Bitmap Debug: "+fish_gill_bitmap.toString());
+//
+//                    final List<Classifier.Recognition> fish_gill_results = detector.recognizeImage(fish_gill_bitmap);
+//                    handler.post(() -> handleResult(fish_gill_bitmap, fish_gill_results));
+//                }).start();
+
+//                List<Bitmap> new_fish_images_list = Arrays.asList(fish_eye_bitmap, fish_gill_bitmap);
+//
+//                fishImageAdapter = new FishImageAdapter(getActivity(), new_fish_images_list);
+//
+//                fish_image_slider.setAdapter(fishImageAdapter);
+
+
+
+//                NavDirections action;
+//                action = DetectionFragmentDirections.actionDetectionFragmentToResultsFragment();
+//                Navigation.findNavController(v).navigate(action);
             });
 
             new Handler().postDelayed(() -> progressDialog.dismiss(), 2500);
+
+            fish_eye_bitmap = Utils.processBitmap(fish_eye_bitmap, TF_OD_API_INPUT_SIZE);
+
+            fish_gill_bitmap = Utils.processBitmap(fish_eye_bitmap, TF_OD_API_INPUT_SIZE);
+
+            initBox();
 
         });
 
@@ -289,6 +317,65 @@ public class DetectionFragment extends Fragment {
                 canvas -> tracker.draw(canvas));
 
         tracker.setFrameConfiguration(TF_OD_API_INPUT_SIZE, TF_OD_API_INPUT_SIZE, sensorOrientation);
+
+        try {
+            detector =
+                    YoloV4Classifier.create(
+                            getActivity().getAssets(),
+                            TF_OD_API_MODEL_FILE,
+                            TF_OD_API_LABELS_FILE,
+                            TF_OD_API_IS_QUANTIZED);
+        } catch (final IOException e) {
+            e.printStackTrace();
+            LOGGER.e(e, "Exception initializing classifier!");
+            Toast toast =
+                    Toast.makeText(
+                            getContext(), "Classifier could not be initialized", Toast.LENGTH_SHORT);
+            toast.show();
+            getActivity().finish();
+        }
+
+    }
+
+    private void handleResult(Bitmap bitmap_eye, Bitmap bitmap_gill, List<Classifier.Recognition> eye_results, List<Classifier.Recognition> gill_results) {
+        final Canvas eye_canvas = new Canvas(bitmap_eye);
+        final Canvas gill_canvas = new Canvas(bitmap_gill);
+        final Paint paint = new Paint();
+        paint.setColor(Color.RED);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(2.0f);
+
+        final List<Classifier.Recognition> mappedRecognitions =
+                new LinkedList<Classifier.Recognition>();
+
+        for (final Classifier.Recognition eye_result : eye_results) {
+            final RectF location = eye_result.getLocation();
+            if (location != null && eye_result.getConfidence() >= MINIMUM_CONFIDENCE_TF_OD_API) {
+                eye_canvas.drawRect(location, paint);
+//                cropToFrameTransform.mapRect(location);
+//
+//                result.setLocation(location);
+//                mappedRecognitions.add(result);
+            }
+        }
+
+        for (final Classifier.Recognition gill_result : gill_results) {
+            final RectF location = gill_result.getLocation();
+            if (location != null && gill_result.getConfidence() >= MINIMUM_CONFIDENCE_TF_OD_API) {
+                gill_canvas.drawRect(location, paint);
+//                cropToFrameTransform.mapRect(location);
+//
+//                result.setLocation(location);
+//                mappedRecognitions.add(result);
+            }
+        }
+//        tracker.trackResults(mappedRecognitions, new Random().nextInt());
+//        trackingOverlay.postInvalidate();
+        List<Bitmap> new_fish_images_list = Arrays.asList(bitmap_eye, bitmap_gill);
+
+        fishImageAdapter = new FishImageAdapter(getActivity(), new_fish_images_list);
+
+        fish_image_slider.setAdapter(fishImageAdapter);
     }
 
 //    @Override
