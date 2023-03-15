@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -34,6 +35,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.uc.degura.R;
+import com.uc.degura.env.ImageUtils;
+import com.uc.degura.env.Logger;
+import com.uc.degura.tflite.Classifier;
+import com.uc.degura.tracking.MultiBoxTracker;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,6 +50,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class DetectionFragment extends Fragment {
+
+    public static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.5f;
 
     @BindView(R.id.page1)
     ImageView slider1;
@@ -80,6 +87,35 @@ public class DetectionFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_detection, container, false);
     }
+
+    private static final Logger LOGGER = new Logger();
+
+    public static final int TF_OD_API_INPUT_SIZE = 416;
+
+    private static final boolean TF_OD_API_IS_QUANTIZED = false;
+
+    private static final String TF_OD_API_MODEL_FILE = "custom-yolov4-416-fp16-tiny-fish.tflite";
+
+    private static final String TF_OD_API_LABELS_FILE = "file:///android_asset/coco.txt";
+
+    // Minimum detection confidence to track a detection.
+
+    private static final boolean MAINTAIN_ASPECT = false;
+
+    private Integer sensorOrientation = 90;
+
+    private Classifier detector;
+
+    private Matrix frameToCropTransform;
+    private Matrix cropToFrameTransform;
+    private MultiBoxTracker tracker;
+    private OverlayView trackingOverlay;
+
+    protected int previewWidth = 0;
+    protected int previewHeight = 0;
+
+    private Bitmap sourceBitmap;
+    private Bitmap cropBitmap;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -131,6 +167,16 @@ public class DetectionFragment extends Fragment {
             progressDialog.getWindow().setGravity(Gravity.CENTER);
             progressDialog.show();
             progressDialog.setOnDismissListener(dialog -> {
+
+                Handler handler = new Handler();
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+//                        final List<Classifier.Recognition> results =
+                    }
+                }).start();
+
                 NavDirections action;
                 action = DetectionFragmentDirections.actionDetectionFragmentToResultsFragment();
                 Navigation.findNavController(v).navigate(action);
@@ -222,6 +268,27 @@ public class DetectionFragment extends Fragment {
         } else {
             return false;
         }
+    }
+
+    private void initBox() {
+        previewHeight = TF_OD_API_INPUT_SIZE;
+        previewWidth = TF_OD_API_INPUT_SIZE;
+
+        frameToCropTransform =
+                ImageUtils.getTransformationMatrix(
+                        previewWidth, previewHeight,
+                        TF_OD_API_INPUT_SIZE, TF_OD_API_INPUT_SIZE,
+                        sensorOrientation, MAINTAIN_ASPECT);
+
+        cropToFrameTransform = new Matrix();
+        frameToCropTransform.invert(cropToFrameTransform);
+
+        tracker = new MultiBoxTracker(getContext());
+        trackingOverlay = getActivity().findViewById(R.id.tracking_overlay);
+        trackingOverlay.addCallback(
+                canvas -> tracker.draw(canvas));
+
+        tracker.setFrameConfiguration(TF_OD_API_INPUT_SIZE, TF_OD_API_INPUT_SIZE, sensorOrientation);
     }
 
 //    @Override
