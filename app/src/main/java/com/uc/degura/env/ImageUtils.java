@@ -1,11 +1,18 @@
 package com.uc.degura.env;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
+
+import androidx.core.content.FileProvider;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 /** Utility class for manipulating images. */
 public class ImageUtils {
@@ -201,5 +208,35 @@ public class ImageUtils {
         }
 
         return matrix;
+    }
+
+    public static Uri saveImage(Bitmap image, Context context, String fileName){
+        File imagesFolder = new File(context.getCacheDir(), "deguraImages");
+        Uri fish_image_uri = null;
+        try {
+            imagesFolder.mkdirs();
+            File file = new File(imagesFolder, fileName);
+            FileOutputStream stream = new FileOutputStream(file);
+            image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            stream.flush();
+            stream.close();
+            fish_image_uri = FileProvider.getUriForFile(context.getApplicationContext(), "com.uc.degura"+".provider", file);
+        }catch (FileNotFoundException e){
+            e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return fish_image_uri;
+    }
+
+    public static Bitmap getBitmap(Context context, Uri imageUri){
+        Bitmap image = null;
+        try {
+            image = MediaStore.Images.Media.getBitmap(context.getContentResolver(), imageUri);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return image;
     }
 }

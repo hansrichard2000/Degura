@@ -134,8 +134,8 @@ public class DetectionFragment extends Fragment {
         Log.d(TAG, "Fish Eye Uri Debug: "+fish_eye_uri.toString());
         Log.d(TAG, "Fish Gill Uri Debug: "+fish_gill_uri.toString());
 
-        fish_eye_bitmap = getBitmap(fish_eye_uri);
-        fish_gill_bitmap = getBitmap(fish_gill_uri);
+        fish_eye_bitmap = ImageUtils.getBitmap(this.getContext(), fish_eye_uri);
+        fish_gill_bitmap = ImageUtils.getBitmap(this.getContext(), fish_gill_uri);
 
         List<Bitmap> fish_images_list = Arrays.asList(fish_eye_bitmap, fish_gill_bitmap);
 
@@ -184,19 +184,6 @@ public class DetectionFragment extends Fragment {
                     handler.post(() -> handleResult(fish_eye_bitmap, fish_gill_bitmap, fish_eye_results, fish_gill_results));
                 }).start();
 
-//                new Thread(() -> {
-//                    Log.d(TAG, "Recognize Fish Gill Bitmap Debug: "+fish_gill_bitmap.toString());
-//
-//                    final List<Classifier.Recognition> fish_gill_results = detector.recognizeImage(fish_gill_bitmap);
-//                    handler.post(() -> handleResult(fish_gill_bitmap, fish_gill_results));
-//                }).start();
-
-//                List<Bitmap> new_fish_images_list = Arrays.asList(fish_eye_bitmap, fish_gill_bitmap);
-//
-//                fishImageAdapter = new FishImageAdapter(getActivity(), new_fish_images_list);
-//
-//                fish_image_slider.setAdapter(fishImageAdapter);
-
 
 
 //                NavDirections action;
@@ -211,6 +198,8 @@ public class DetectionFragment extends Fragment {
             fish_gill_bitmap = Utils.processBitmap(fish_gill_bitmap, TF_OD_API_INPUT_SIZE);
 
             initBox();
+
+
 
         });
 
@@ -239,16 +228,6 @@ public class DetectionFragment extends Fragment {
 //            deleteCache(getContext());
         });
 
-    }
-
-    private Bitmap getBitmap(Uri imageUri){
-        Bitmap image = null;
-        try {
-            image = MediaStore.Images.Media.getBitmap(this.getContext().getContentResolver(), imageUri);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return image;
     }
 
     private void changeIndicatorColor(){

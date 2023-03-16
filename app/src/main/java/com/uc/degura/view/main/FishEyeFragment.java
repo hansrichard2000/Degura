@@ -32,6 +32,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.uc.degura.R;
+import com.uc.degura.env.ImageUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -105,7 +106,7 @@ public class FishEyeFragment extends Fragment {
 
                         Log.d(TAG, "Image Bitmap Debug: "+fish_eye_image.toString());
 
-                        Uri fish_eye_uri = saveImage(fish_eye_image, getActivity());
+                        Uri fish_eye_uri = ImageUtils.saveImage(fish_eye_image, getActivity(), "captured_fish_eye_image.jpg");
 
                         Log.d(TAG, "Image Uri Debug: "+fish_eye_uri.toString());
 
@@ -155,26 +156,4 @@ public class FishEyeFragment extends Fragment {
             galleryResultLauncher.launch(galleryIntent);
         });
     }
-
-    private Uri saveImage(Bitmap image, Context context){
-        File imagesFolder = new File(context.getCacheDir(), "deguraImages");
-        Uri fish_eye_uri = null;
-        try {
-            imagesFolder.mkdirs();
-            File file = new File(imagesFolder, "captured_fish_eye_image.jpg");
-            FileOutputStream stream = new FileOutputStream(file);
-            image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-            stream.flush();
-            stream.close();
-            fish_eye_uri = FileProvider.getUriForFile(context.getApplicationContext(), "com.uc.degura"+".provider", file);
-        }catch (FileNotFoundException e){
-            e.printStackTrace();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return fish_eye_uri;
-    }
-
-
 }

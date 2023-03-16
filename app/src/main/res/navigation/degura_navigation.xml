@@ -68,5 +68,11 @@
             android:id="@+id/action_resultsFragment_to_fishEyeFragment"
             app:destination="@id/fishEyeFragment"
             app:enterAnim="@anim/nav_default_exit_anim" />
+        <argument
+            android:name="detected_eye"
+            app:argType="android.net.Uri" />
+        <argument
+            android:name="detected_gill"
+            app:argType="android.net.Uri" />
     </fragment>
 </navigation>

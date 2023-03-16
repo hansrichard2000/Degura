@@ -30,6 +30,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.uc.degura.R;
+import com.uc.degura.env.ImageUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -86,7 +87,7 @@ public class FishGillFragment extends Fragment {
 
                         Log.d(TAG, "Image Bitmap Debug: "+fish_gill_image.toString());
 
-                        Uri fish_gill_uri = saveImage(fish_gill_image, getActivity());
+                        Uri fish_gill_uri = ImageUtils.saveImage(fish_gill_image, getActivity(), "captured_fish_gill_image.jpg");
 
                         Log.d(TAG, "Image Uri Debug: "+fish_gill_uri.toString());
 
@@ -139,26 +140,6 @@ public class FishGillFragment extends Fragment {
         btn_back_gill.setOnClickListener(v -> {
             Navigation.findNavController(v).navigateUp();
         });
-    }
-
-    private Uri saveImage(Bitmap image, Context context){
-        File imagesFolder = new File(context.getCacheDir(), "deguraImages");
-        Uri fish_eye_uri = null;
-        try {
-            imagesFolder.mkdirs();
-            File file = new File(imagesFolder, "captured_fish_gill_image.jpg");
-            FileOutputStream stream = new FileOutputStream(file);
-            image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-            stream.flush();
-            stream.close();
-            fish_eye_uri = FileProvider.getUriForFile(context.getApplicationContext(), "com.uc.degura"+".provider", file);
-        }catch (FileNotFoundException e){
-            e.printStackTrace();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return fish_eye_uri;
     }
 
     private static void deleteCache(Context context){
