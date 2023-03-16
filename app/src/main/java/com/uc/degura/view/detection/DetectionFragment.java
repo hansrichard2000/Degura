@@ -208,7 +208,7 @@ public class DetectionFragment extends Fragment {
 
             fish_eye_bitmap = Utils.processBitmap(fish_eye_bitmap, TF_OD_API_INPUT_SIZE);
 
-            fish_gill_bitmap = Utils.processBitmap(fish_eye_bitmap, TF_OD_API_INPUT_SIZE);
+            fish_gill_bitmap = Utils.processBitmap(fish_gill_bitmap, TF_OD_API_INPUT_SIZE);
 
             initBox();
 
