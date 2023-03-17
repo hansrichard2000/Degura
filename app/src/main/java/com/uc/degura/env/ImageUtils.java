@@ -3,6 +3,7 @@ package com.uc.degura.env;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -238,5 +239,14 @@ public class ImageUtils {
             e.printStackTrace();
         }
         return image;
+    }
+
+    public static Uri cropImage(Bitmap image_bitmap, Context context, String file_name, RectF location){
+
+        image_bitmap = Bitmap.createBitmap(image_bitmap, (int) location.left, (int) location.top, (int) location.width(), (int) location.height());
+
+        Uri image_uri = saveImage(image_bitmap, context, file_name);
+
+        return image_uri;
     }
 }

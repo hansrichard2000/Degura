@@ -81,6 +81,9 @@ public class DetectionFragment extends Fragment {
 
     private FishImageAdapter fishImageAdapter;
 
+    Uri cropped_eye;
+    Uri cropped_gill;
+
     private static final String TAG = "DetectionFragment";
 
     public DetectionFragment() {
@@ -137,6 +140,10 @@ public class DetectionFragment extends Fragment {
         fish_eye_bitmap = ImageUtils.getBitmap(this.getContext(), fish_eye_uri);
         fish_gill_bitmap = ImageUtils.getBitmap(this.getContext(), fish_gill_uri);
 
+        fish_eye_bitmap = Utils.processBitmap(fish_eye_bitmap, TF_OD_API_INPUT_SIZE);
+
+        fish_gill_bitmap = Utils.processBitmap(fish_gill_bitmap, TF_OD_API_INPUT_SIZE);
+
         List<Bitmap> fish_images_list = Arrays.asList(fish_eye_bitmap, fish_gill_bitmap);
 
         fishImageAdapter = new FishImageAdapter(getActivity(), fish_images_list);
@@ -184,10 +191,8 @@ public class DetectionFragment extends Fragment {
                     handler.post(() -> handleResult(fish_eye_bitmap, fish_gill_bitmap, fish_eye_results, fish_gill_results));
                 }).start();
 
-
-
 //                NavDirections action;
-//                action = DetectionFragmentDirections.actionDetectionFragmentToResultsFragment();
+//                action = DetectionFragmentDirections.actionDetectionFragmentToResultsFragment(cropped_eye, cropped_gill);
 //                Navigation.findNavController(v).navigate(action);
             });
 
@@ -329,8 +334,29 @@ public class DetectionFragment extends Fragment {
 
         for (final Classifier.Recognition eye_result : eye_results) {
             final RectF location = eye_result.getLocation();
-            if (location != null && eye_result.getConfidence() >= MINIMUM_CONFIDENCE_TF_OD_API) {
+            final String imageTitle = eye_result.getTitle();
+            final Float confidence = eye_result.getConfidence();
+            final int detectedClass = eye_result.getDetectedClass();
+
+//            if (imageTitle.equals("ikan")){
+//                Log.d(TAG, "handleResultLocation: "+location);
+//                Log.d(TAG, "handleResultTitle: "+imageTitle);
+//                Log.d(TAG, "handleResultConfidence: "+confidence);
+//                Log.d(TAG, "handleResultClass: "+detectedClass);
+//            }else{
+//                Log.d(TAG, "handleResult: Result not Ikan");
+//            }
+
+            if (location != null && eye_result.getConfidence() >= MINIMUM_CONFIDENCE_TF_OD_API && eye_result.getTitle().equals("kepala")) {
+                cropped_eye = ImageUtils.cropImage(bitmap_eye, getContext(), "cropped_fish_eye.jpg", location);
+                Log.d(TAG, "handleResultLocation: "+location);
+                Log.d(TAG, "handleResultTitle: "+imageTitle);
+                Log.d(TAG, "handleResultConfidence: "+confidence);
+                Log.d(TAG, "handleResultClass: "+detectedClass);
+                Log.d(TAG, "handleResultCroppedImg: "+cropped_eye);
                 eye_canvas.drawRect(location, paint);
+
+
 //                cropToFrameTransform.mapRect(location);
 //
 //                result.setLocation(location);
@@ -340,7 +366,26 @@ public class DetectionFragment extends Fragment {
 
         for (final Classifier.Recognition gill_result : gill_results) {
             final RectF location = gill_result.getLocation();
-            if (location != null && gill_result.getConfidence() >= MINIMUM_CONFIDENCE_TF_OD_API) {
+            final String imageTitle = gill_result.getTitle();
+            final Float confidence = gill_result.getConfidence();
+            final int detectedClass = gill_result.getDetectedClass();
+
+//            if (imageTitle.equals("kepala")){
+//                Log.d(TAG, "handleResultLocation: "+location);
+//                Log.d(TAG, "handleResultTitle: "+imageTitle);
+//                Log.d(TAG, "handleResultConfidence: "+confidence);
+//                Log.d(TAG, "handleResultClass: "+detectedClass);
+//            }else{
+//                Log.d(TAG, "handleResult: Result not Kepala");
+//            }
+
+            if (location != null && gill_result.getConfidence() >= MINIMUM_CONFIDENCE_TF_OD_API && gill_result.getTitle().equals("ikan")) {
+                cropped_gill = ImageUtils.cropImage(bitmap_gill, getContext(), "cropped_gill_eye.jpg", location);
+                Log.d(TAG, "handleResultLocation: "+location);
+                Log.d(TAG, "handleResultTitle: "+imageTitle);
+                Log.d(TAG, "handleResultConfidence: "+confidence);
+                Log.d(TAG, "handleResultClass: "+detectedClass);
+                Log.d(TAG, "handleResultCroppedImg: "+cropped_gill);
                 gill_canvas.drawRect(location, paint);
 //                cropToFrameTransform.mapRect(location);
 //
@@ -350,6 +395,13 @@ public class DetectionFragment extends Fragment {
         }
 //        tracker.trackResults(mappedRecognitions, new Random().nextInt());
 //        trackingOverlay.postInvalidate();
+
+//        cropImage();
+
+        bitmap_eye = ImageUtils.getBitmap(getContext(), cropped_eye);
+
+        bitmap_gill = ImageUtils.getBitmap(getContext(), cropped_gill);
+
         List<Bitmap> new_fish_images_list = Arrays.asList(bitmap_eye, bitmap_gill);
 
         fishImageAdapter = new FishImageAdapter(getActivity(), new_fish_images_list);
@@ -357,9 +409,4 @@ public class DetectionFragment extends Fragment {
         fish_image_slider.setAdapter(fishImageAdapter);
     }
 
-//    @Override
-//    public void onStop() {
-//        super.onStop();
-//        deleteCache(getContext());
-//    }
 }
