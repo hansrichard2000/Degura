@@ -37,6 +37,7 @@ import com.uc.degura.R;
 import com.uc.degura.env.ImageUtils;
 import com.uc.degura.env.Utils;
 import com.uc.degura.ml.Model;
+import com.uc.degura.ml.ModelFish;
 import com.uc.degura.tflite.Classifier;
 import com.uc.degura.view.detection.DetectionFragmentDirections;
 import com.uc.degura.view.detection.FishImageAdapter;
@@ -84,7 +85,7 @@ public class ResultsFragment extends Fragment {
 
     Bitmap detected_gill_bitmap;
 
-    int imageSize = 32;
+    int imageSize = 224;
 
     Dialog progressDialog;
 
@@ -139,8 +140,8 @@ public class ResultsFragment extends Fragment {
             classifyImage(detected_eye_bitmap);
             eye_status.setText(classifyResult);
 
-            classifyImage(detected_gill_bitmap);
-            gill_status.setText(classifyResult);
+//            classifyImage(detected_gill_bitmap);
+//            gill_status.setText(classifyResult);
         });
 
         List<Bitmap> fish_results_list = Arrays.asList(detected_eye_bitmap, detected_gill_bitmap);
@@ -217,10 +218,10 @@ public class ResultsFragment extends Fragment {
     private void classifyImage(Bitmap image) {
 
         try {
-            Model model = Model.newInstance(getContext());
+            ModelFish model = ModelFish.newInstance(getContext());
 
             // Creates inputs for reference.
-            TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, 32, 32, 3}, DataType.FLOAT32);
+            TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, 224, 224, 3}, DataType.FLOAT32);
             ByteBuffer byteBuffer = ByteBuffer.allocateDirect(4 * imageSize * imageSize * 3);
             byteBuffer.order(ByteOrder.nativeOrder());
 
@@ -241,7 +242,7 @@ public class ResultsFragment extends Fragment {
             inputFeature0.loadBuffer(byteBuffer);
 
             // Runs model inference and gets result.
-            Model.Outputs outputs = model.process(inputFeature0);
+            ModelFish.Outputs outputs = model.process(inputFeature0);
             TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
 
             float[] confidences = outputFeature0.getFloatArray();
