@@ -189,14 +189,13 @@ public class DetectionFragment extends Fragment {
                     final List<Classifier.Recognition> fish_eye_results = detector.recognizeImage(fish_eye_bitmap);
                     final List<Classifier.Recognition> fish_gill_results = detector.recognizeImage(fish_gill_bitmap);
                     handler.post(() -> handleResult(fish_eye_bitmap, fish_gill_bitmap, fish_eye_results, fish_gill_results));
-                }).start();
 
-//                NavDirections action;
-//                action = DetectionFragmentDirections.actionDetectionFragmentToResultsFragment(cropped_eye, cropped_gill);
-//                Navigation.findNavController(v).navigate(action);
+                }).start();
             });
 
             new Handler().postDelayed(() -> progressDialog.dismiss(), 2500);
+
+
 
             fish_eye_bitmap = Utils.processBitmap(fish_eye_bitmap, TF_OD_API_INPUT_SIZE);
 
@@ -380,7 +379,7 @@ public class DetectionFragment extends Fragment {
 //            }
 
             if (location != null && gill_result.getConfidence() >= MINIMUM_CONFIDENCE_TF_OD_API && gill_result.getTitle().equals("ikan")) {
-                cropped_gill = ImageUtils.cropImage(bitmap_gill, getContext(), "cropped_gill_eye.jpg", location);
+                cropped_gill = ImageUtils.cropImage(bitmap_gill, getContext(), "cropped_fish_gill.jpg", location);
                 Log.d(TAG, "handleResultLocation: "+location);
                 Log.d(TAG, "handleResultTitle: "+imageTitle);
                 Log.d(TAG, "handleResultConfidence: "+confidence);
@@ -396,17 +395,20 @@ public class DetectionFragment extends Fragment {
 //        tracker.trackResults(mappedRecognitions, new Random().nextInt());
 //        trackingOverlay.postInvalidate();
 
-//        cropImage();
 
-        bitmap_eye = ImageUtils.getBitmap(getContext(), cropped_eye);
-
-        bitmap_gill = ImageUtils.getBitmap(getContext(), cropped_gill);
+//        bitmap_eye = ImageUtils.getBitmap(getContext(), cropped_eye);
+//
+//        bitmap_gill = ImageUtils.getBitmap(getContext(), cropped_gill);
 
         List<Bitmap> new_fish_images_list = Arrays.asList(bitmap_eye, bitmap_gill);
 
         fishImageAdapter = new FishImageAdapter(getActivity(), new_fish_images_list);
 
         fish_image_slider.setAdapter(fishImageAdapter);
+
+        NavDirections action;
+        action = DetectionFragmentDirections.actionDetectionFragmentToResultsFragment(cropped_eye, cropped_gill);
+        Navigation.findNavController(getView()).navigate(action);
     }
 
 }
