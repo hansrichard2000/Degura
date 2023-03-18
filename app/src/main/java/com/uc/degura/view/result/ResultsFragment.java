@@ -1,5 +1,7 @@
 package com.uc.degura.view.result;
 
+import static com.uc.degura.view.detection.DetectionFragment.TF_OD_API_INPUT_SIZE;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -106,23 +108,6 @@ public class ResultsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        progressDialog = new Dialog(getActivity(), R.style.DeguraLoadingTheme);
-        View loadingView = LayoutInflater.from(getContext()).inflate(R.layout.loading_screen, null);
-        WindowManager.LayoutParams params = progressDialog.getWindow().getAttributes();
-        params.width = WindowManager.LayoutParams.MATCH_PARENT; // set as full width
-        params.height = WindowManager.LayoutParams.MATCH_PARENT;// set as full heiggt
-        progressDialog.setContentView(loadingView);
-        progressDialog.getWindow().setBackgroundDrawableResource(R.color.transparent_black);
-        progressDialog.getWindow().setGravity(Gravity.CENTER);
-        progressDialog.show();
-        progressDialog.setOnDismissListener(dialog -> {
-            //            classifyImage(detected_eye_bitmap);
-//            eye_status.setText(classifyResult);
-//
-//            classifyImage(detected_gill_bitmap);
-//            gill_status.setText(classifyResult);
-        });
-
         new Handler().postDelayed(() -> progressDialog.dismiss(), 2500);
 
         Uri cropped_fish_eye_uri = getArguments().getParcelable("detected_eye");
@@ -134,8 +119,29 @@ public class ResultsFragment extends Fragment {
         detected_eye_bitmap = ImageUtils.getBitmap(this.getContext(), cropped_fish_eye_uri);
         detected_gill_bitmap = ImageUtils.getBitmap(this.getContext(), cropped_fish_gill_uri);
 
+//        detected_eye_bitmap = Utils.processBitmap(detected_eye_bitmap, TF_OD_API_INPUT_SIZE);
+//
+//        detected_gill_bitmap = Utils.processBitmap(detected_gill_bitmap, TF_OD_API_INPUT_SIZE);
+
         Log.d(TAG, "onViewCreatedEyeBitmap: "+detected_eye_bitmap);
         Log.d(TAG, "onViewCreatedGillBitmap: "+detected_gill_bitmap);
+
+        progressDialog = new Dialog(getActivity(), R.style.DeguraLoadingTheme);
+        View loadingView = LayoutInflater.from(getContext()).inflate(R.layout.loading_screen, null);
+        WindowManager.LayoutParams params = progressDialog.getWindow().getAttributes();
+        params.width = WindowManager.LayoutParams.MATCH_PARENT; // set as full width
+        params.height = WindowManager.LayoutParams.MATCH_PARENT;// set as full heiggt
+        progressDialog.setContentView(loadingView);
+        progressDialog.getWindow().setBackgroundDrawableResource(R.color.transparent_black);
+        progressDialog.getWindow().setGravity(Gravity.CENTER);
+        progressDialog.show();
+        progressDialog.setOnDismissListener(dialog -> {
+            classifyImage(detected_eye_bitmap);
+            eye_status.setText(classifyResult);
+
+            classifyImage(detected_gill_bitmap);
+            gill_status.setText(classifyResult);
+        });
 
         List<Bitmap> fish_results_list = Arrays.asList(detected_eye_bitmap, detected_gill_bitmap);
 
