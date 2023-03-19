@@ -70,10 +70,7 @@
             app:enterAnim="@anim/nav_default_exit_anim"
             app:launchSingleTop="true" />
         <argument
-            android:name="detected_eye"
-            app:argType="android.net.Uri" />
-        <argument
-            android:name="detected_gill"
-            app:argType="android.net.Uri" />
+            android:name="detected_images"
+            app:argType="com.uc.degura.model.DetectedImage" />
     </fragment>
 </navigation>

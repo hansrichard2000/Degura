@@ -1,19 +1,18 @@
 package com.uc.degura.view.result;
 
-import static com.uc.degura.view.detection.DetectionFragment.TF_OD_API_INPUT_SIZE;
+import static com.uc.degura.view.detection.DetectionFragment.MINIMUM_CONFIDENCE_TF_OD_API;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.media.ThumbnailUtils;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -35,14 +34,10 @@ import android.widget.TextView;
 
 import com.uc.degura.R;
 import com.uc.degura.env.ImageUtils;
-import com.uc.degura.env.Utils;
-import com.uc.degura.ml.Model;
 import com.uc.degura.ml.ModelFish;
+import com.uc.degura.model.DetectedImage;
 import com.uc.degura.tflite.Classifier;
-import com.uc.degura.view.detection.DetectionFragmentDirections;
 import com.uc.degura.view.detection.FishImageAdapter;
-import com.uc.degura.view.main.FishEyeFragmentDirections;
-import com.uc.degura.view.main.FishGillFragmentDirections;
 
 import org.tensorflow.lite.DataType;
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
@@ -51,6 +46,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -81,6 +77,18 @@ public class ResultsFragment extends Fragment {
 
     String classifyResult;
 
+    Uri original_fish_eye_uri;
+
+    Uri original_fish_gill_uri;
+
+    List<Uri> cropped_fish_eye_uri;
+
+    List<Uri> cropped_fish_gill_uri;
+
+    Bitmap original_eye_bitmap;
+
+    Bitmap original_gill_bitmap;
+
     Bitmap detected_eye_bitmap;
 
     Bitmap detected_gill_bitmap;
@@ -89,7 +97,9 @@ public class ResultsFragment extends Fragment {
 
     Dialog progressDialog;
 
-    ResultsAdapter resultsAdapter;
+    DetectedImage detectedImage;
+
+    ResultsImageAdapter resultsImageAdapter;
 
     private static final String TAG = "ResultsFragment";
 
@@ -109,23 +119,29 @@ public class ResultsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        new Handler().postDelayed(() -> progressDialog.dismiss(), 2500);
+        detectedImage = getArguments().getParcelable("detected_images");
 
-        Uri cropped_fish_eye_uri = getArguments().getParcelable("detected_eye");
-        Uri cropped_fish_gill_uri = getArguments().getParcelable("detected_gill");
+        List<Classifier.Recognition> eye_results = detectedImage.getList_eye_result();
 
-        Log.d(TAG, "onViewCreatedFishGill: " + cropped_fish_eye_uri);
-        Log.d(TAG, "onViewCreatedFishGill: " + cropped_fish_gill_uri);
+        List<Classifier.Recognition> gill_results = detectedImage.getList_gill_result();
 
-        detected_eye_bitmap = ImageUtils.getBitmap(this.getContext(), cropped_fish_eye_uri);
-        detected_gill_bitmap = ImageUtils.getBitmap(this.getContext(), cropped_fish_gill_uri);
+        original_fish_eye_uri = detectedImage.getFish_eye_uri();
+        original_fish_gill_uri = detectedImage.getFish_gill_uri();
 
-//        detected_eye_bitmap = Utils.processBitmap(detected_eye_bitmap, TF_OD_API_INPUT_SIZE);
-//
-//        detected_gill_bitmap = Utils.processBitmap(detected_gill_bitmap, TF_OD_API_INPUT_SIZE);
+        Log.d(TAG, "onViewCreatedFishEyeUri: " + original_fish_eye_uri);
+        Log.d(TAG, "onViewCreatedFishGillUri: " + original_fish_gill_uri);
 
-        Log.d(TAG, "onViewCreatedEyeBitmap: "+detected_eye_bitmap);
-        Log.d(TAG, "onViewCreatedGillBitmap: "+detected_gill_bitmap);
+        cropped_fish_eye_uri = detectedImage.getList_cropped_eye_uri();
+        cropped_fish_gill_uri = detectedImage.getList_cropped_gill_uri();
+
+        Log.d(TAG, "onViewCroppedFishEyeUri: " + cropped_fish_eye_uri);
+        Log.d(TAG, "onViewCroppedFishGillUri: " + cropped_fish_gill_uri);
+
+        original_eye_bitmap = ImageUtils.getBitmap(this.getContext(), original_fish_eye_uri);
+        original_gill_bitmap = ImageUtils.getBitmap(this.getContext(), original_fish_gill_uri);
+
+        Log.d(TAG, "onViewCreatedEyeBitmap: "+original_eye_bitmap);
+        Log.d(TAG, "onViewCreatedGillBitmap: "+original_gill_bitmap);
 
         progressDialog = new Dialog(getActivity(), R.style.DeguraLoadingTheme);
         View loadingView = LayoutInflater.from(getContext()).inflate(R.layout.loading_screen, null);
@@ -137,18 +153,29 @@ public class ResultsFragment extends Fragment {
         progressDialog.getWindow().setGravity(Gravity.CENTER);
         progressDialog.show();
         progressDialog.setOnDismissListener(dialog -> {
-            classifyImage(detected_eye_bitmap);
-            eye_status.setText(classifyResult);
+
+            Handler handler = new Handler();
+
+            new Thread(() -> {
+
+                handler.post(() -> handleResult(cropped_fish_eye_uri, cropped_fish_gill_uri, eye_results, gill_results));
+
+            }).start();
+
+//            classifyImage(detected_eye_bitmap);
+//            eye_status.setText(classifyResult);
 
 //            classifyImage(detected_gill_bitmap);
 //            gill_status.setText(classifyResult);
         });
 
-        List<Bitmap> fish_results_list = Arrays.asList(detected_eye_bitmap, detected_gill_bitmap);
+        new Handler().postDelayed(() -> progressDialog.dismiss(), 2500);
 
-        resultsAdapter = new ResultsAdapter(getActivity(), fish_results_list);
+        List<Bitmap> fish_results_list = Arrays.asList(original_eye_bitmap, original_gill_bitmap);
 
-        view_pager_result.setAdapter(resultsAdapter);
+        resultsImageAdapter = new ResultsImageAdapter(getActivity(), fish_results_list);
+
+        view_pager_result.setAdapter(resultsImageAdapter);
 
         view_pager_result.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
@@ -213,6 +240,51 @@ public class ResultsFragment extends Fragment {
                 page2result.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.transparent_white));
                 break;
         }
+    }
+
+    private void handleResult(List<Uri> cropped_bitmap_eye, List<Uri> cropped_bitmap_gill, List<Classifier.Recognition> eye_results, List<Classifier.Recognition> gill_results) {
+
+        for (final Classifier.Recognition eye_result : eye_results) {
+
+            final RectF location = eye_result.getLocation();
+            final String imageTitle = eye_result.getTitle();
+            final Float confidence = eye_result.getConfidence();
+            final int detectedClass = eye_result.getDetectedClass();
+
+            if (location != null && eye_result.getConfidence() >= MINIMUM_CONFIDENCE_TF_OD_API && eye_result.getTitle().equals("kepala")) {
+                Log.d(TAG, "handleResultLocation: "+location);
+                Log.d(TAG, "handleResultTitle: "+imageTitle);
+                Log.d(TAG, "handleResultConfidence: "+confidence);
+                Log.d(TAG, "handleResultClass: "+detectedClass);
+
+
+//                cropToFrameTransform.mapRect(location);
+//
+//                result.setLocation(location);
+//                mappedRecognitions.add(result);
+            }
+        }
+
+        for (final Classifier.Recognition gill_result : gill_results) {
+            final RectF location = gill_result.getLocation();
+            final String imageTitle = gill_result.getTitle();
+            final Float confidence = gill_result.getConfidence();
+            final int detectedClass = gill_result.getDetectedClass();
+
+            if (location != null && gill_result.getConfidence() >= MINIMUM_CONFIDENCE_TF_OD_API && gill_result.getTitle().equals("ikan")) {
+                Log.d(TAG, "handleResultLocation: "+location);
+                Log.d(TAG, "handleResultTitle: "+imageTitle);
+                Log.d(TAG, "handleResultConfidence: "+confidence);
+                Log.d(TAG, "handleResultClass: "+detectedClass);
+//                cropToFrameTransform.mapRect(location);
+//
+//                result.setLocation(location);
+//                mappedRecognitions.add(result);
+            }
+        }
+//        tracker.trackResults(mappedRecognitions, new Random().nextInt());
+//        trackingOverlay.postInvalidate();
+
     }
 
     private void classifyImage(Bitmap image) {

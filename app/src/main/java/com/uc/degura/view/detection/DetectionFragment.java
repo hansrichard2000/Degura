@@ -41,6 +41,7 @@ import com.uc.degura.R;
 import com.uc.degura.env.ImageUtils;
 import com.uc.degura.env.Logger;
 import com.uc.degura.env.Utils;
+import com.uc.degura.model.DetectedImage;
 import com.uc.degura.tflite.Classifier;
 import com.uc.degura.tflite.YoloV4Classifier;
 import com.uc.degura.tracking.MultiBoxTracker;
@@ -48,6 +49,7 @@ import com.uc.degura.tracking.MultiBoxTracker;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -80,6 +82,10 @@ public class DetectionFragment extends Fragment {
     Dialog progressDialog;
 
     private FishImageAdapter fishImageAdapter;
+
+    Uri detected_eye_box;
+
+    Uri detected_gill_box;
 
     Uri cropped_eye;
     Uri cropped_gill;
@@ -123,6 +129,9 @@ public class DetectionFragment extends Fragment {
     protected int previewWidth = 0;
     protected int previewHeight = 0;
 
+    Uri fish_eye_uri;
+    Uri fish_gill_uri;
+
     private Bitmap fish_eye_bitmap;
     private Bitmap fish_gill_bitmap;
 
@@ -131,8 +140,8 @@ public class DetectionFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        Uri fish_eye_uri = getArguments().getParcelable("fish_eye");
-        Uri fish_gill_uri = getArguments().getParcelable("fish_gill");
+        fish_eye_uri = getArguments().getParcelable("fish_eye");
+        fish_gill_uri = getArguments().getParcelable("fish_gill");
 
         Log.d(TAG, "Fish Eye Uri Debug: "+fish_eye_uri.toString());
         Log.d(TAG, "Fish Gill Uri Debug: "+fish_gill_uri.toString());
@@ -194,8 +203,6 @@ public class DetectionFragment extends Fragment {
             });
 
             new Handler().postDelayed(() -> progressDialog.dismiss(), 2500);
-
-
 
             fish_eye_bitmap = Utils.processBitmap(fish_eye_bitmap, TF_OD_API_INPUT_SIZE);
 
@@ -320,6 +327,9 @@ public class DetectionFragment extends Fragment {
 
     }
 
+    List<Bitmap> list_cropped_eye = new ArrayList<>();
+    List<Bitmap> list_cropped_gill = new ArrayList<>();
+
     private void handleResult(Bitmap bitmap_eye, Bitmap bitmap_gill, List<Classifier.Recognition> eye_results, List<Classifier.Recognition> gill_results) {
         final Canvas eye_canvas = new Canvas(bitmap_eye);
         final Canvas gill_canvas = new Canvas(bitmap_gill);
@@ -400,15 +410,20 @@ public class DetectionFragment extends Fragment {
 //
 //        bitmap_gill = ImageUtils.getBitmap(getContext(), cropped_gill);
 
-        List<Bitmap> new_fish_images_list = Arrays.asList(bitmap_eye, bitmap_gill);
+//        List<Bitmap> new_fish_images_list = Arrays.asList(bitmap_eye, bitmap_gill);
+//
+//        fishImageAdapter = new FishImageAdapter(getActivity(), new_fish_images_list);
+//
+//        fish_image_slider.setAdapter(fishImageAdapter);
 
-        fishImageAdapter = new FishImageAdapter(getActivity(), new_fish_images_list);
+        fish_eye_uri = ImageUtils.saveImage(bitmap_eye, getContext(), "resized_fish_eye.jpg");
+        fish_gill_uri = ImageUtils.saveImage(bitmap_gill, getContext(), "resized_fish_gill.jpg");
 
-        fish_image_slider.setAdapter(fishImageAdapter);
+//        DetectedImage detectedImage = new DetectedImage(eye_results, gill_results,  fish_eye_uri, fish_gill_uri);
 
-        NavDirections action;
-        action = DetectionFragmentDirections.actionDetectionFragmentToResultsFragment(cropped_eye, cropped_gill);
-        Navigation.findNavController(getView()).navigate(action);
+//        NavDirections action;
+//        action = DetectionFragmentDirections.actionDetectionFragmentToResultsFragment(detectedImage);
+//        Navigation.findNavController(getView()).navigate(action);
     }
 
 }
