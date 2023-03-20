@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.PriorityQueue;
 import java.util.Vector;
 
@@ -120,12 +121,12 @@ public class YoloV4Classifier implements Classifier {
     }
 
     public void setNumThreads(int num_threads) {
-        if (tfLite != null) tfLite.setNumThreads(num_threads);
+        if (tfLite != null) tfLiteOpt.setNumThreads(num_threads);
     }
-
+    
     @Override
     public void setUseNNAPI(boolean isChecked) {
-        if (tfLite != null) tfLite.setUseNNAPI(isChecked);
+        if (tfLite != null) tfLiteOpt.setUseNNAPI(isChecked);
     }
 
     @Override
@@ -179,6 +180,8 @@ public class YoloV4Classifier implements Classifier {
     private ByteBuffer imgData;
 
     private Interpreter tfLite;
+
+    private Interpreter.Options tfLiteOpt;
 
     private YoloV4Classifier() {
     }
