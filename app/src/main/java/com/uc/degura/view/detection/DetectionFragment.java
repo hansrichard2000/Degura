@@ -129,6 +129,9 @@ public class DetectionFragment extends Fragment {
     protected int previewWidth = 0;
     protected int previewHeight = 0;
 
+    Uri cropped_fish_eye_uri;
+    Uri cropped_fish_gill_uri;
+
     Uri fish_eye_uri;
     Uri fish_gill_uri;
 
@@ -327,8 +330,8 @@ public class DetectionFragment extends Fragment {
 
     }
 
-    List<Bitmap> list_cropped_eye = new ArrayList<>();
-    List<Bitmap> list_cropped_gill = new ArrayList<>();
+    List<Uri> list_cropped_eye = new ArrayList<>();
+    List<Uri> list_cropped_gill = new ArrayList<>();
 
     private void handleResult(Bitmap bitmap_eye, Bitmap bitmap_gill, List<Classifier.Recognition> eye_results, List<Classifier.Recognition> gill_results) {
         final Canvas eye_canvas = new Canvas(bitmap_eye);
@@ -357,12 +360,13 @@ public class DetectionFragment extends Fragment {
 //            }
 
             if (location != null && eye_result.getConfidence() >= MINIMUM_CONFIDENCE_TF_OD_API && eye_result.getTitle().equals("kepala")) {
-                cropped_eye = ImageUtils.cropImage(bitmap_eye, getContext(), "cropped_fish_eye.jpg", location);
+                cropped_eye = ImageUtils.cropImage(bitmap_eye, getContext(), "cropped_fish_eye"+location+".jpg", location);
+                list_cropped_eye.add(cropped_eye);
                 Log.d(TAG, "handleResultLocation: "+location);
                 Log.d(TAG, "handleResultTitle: "+imageTitle);
                 Log.d(TAG, "handleResultConfidence: "+confidence);
                 Log.d(TAG, "handleResultClass: "+detectedClass);
-                Log.d(TAG, "handleResultCroppedImg: "+cropped_eye);
+                Log.d(TAG, "handleResultCroppedImg: "+list_cropped_eye);
                 eye_canvas.drawRect(location, paint);
 
 
@@ -389,12 +393,13 @@ public class DetectionFragment extends Fragment {
 //            }
 
             if (location != null && gill_result.getConfidence() >= MINIMUM_CONFIDENCE_TF_OD_API && gill_result.getTitle().equals("ikan")) {
-                cropped_gill = ImageUtils.cropImage(bitmap_gill, getContext(), "cropped_fish_gill.jpg", location);
+                cropped_gill = ImageUtils.cropImage(bitmap_gill, getContext(), "cropped_fish_gill"+location+".jpg", location);
+                list_cropped_gill.add(cropped_gill);
                 Log.d(TAG, "handleResultLocation: "+location);
                 Log.d(TAG, "handleResultTitle: "+imageTitle);
                 Log.d(TAG, "handleResultConfidence: "+confidence);
                 Log.d(TAG, "handleResultClass: "+detectedClass);
-                Log.d(TAG, "handleResultCroppedImg: "+cropped_gill);
+                Log.d(TAG, "handleResultCroppedImg: "+list_cropped_gill);
                 gill_canvas.drawRect(location, paint);
 //                cropToFrameTransform.mapRect(location);
 //
@@ -419,11 +424,11 @@ public class DetectionFragment extends Fragment {
         fish_eye_uri = ImageUtils.saveImage(bitmap_eye, getContext(), "resized_fish_eye.jpg");
         fish_gill_uri = ImageUtils.saveImage(bitmap_gill, getContext(), "resized_fish_gill.jpg");
 
-//        DetectedImage detectedImage = new DetectedImage(eye_results, gill_results,  fish_eye_uri, fish_gill_uri);
+        DetectedImage detectedImage = new DetectedImage(eye_results, gill_results, list_cropped_eye, list_cropped_gill, fish_eye_uri, fish_gill_uri);
 
-//        NavDirections action;
-//        action = DetectionFragmentDirections.actionDetectionFragmentToResultsFragment(detectedImage);
-//        Navigation.findNavController(getView()).navigate(action);
+        NavDirections action;
+        action = DetectionFragmentDirections.actionDetectionFragmentToResultsFragment(detectedImage);
+        Navigation.findNavController(getView()).navigate(action);
     }
 
 }

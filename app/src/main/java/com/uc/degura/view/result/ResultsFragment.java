@@ -19,6 +19,8 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Handler;
@@ -45,6 +47,7 @@ import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -53,12 +56,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ResultsFragment extends Fragment {
-
-    @BindView(R.id.eye_status)
-    TextView eye_status;
-
-    @BindView(R.id.gill_status)
-    TextView gill_status;
 
     @BindView(R.id.result_image_txt)
     TextView result_image_txt;
@@ -74,6 +71,9 @@ public class ResultsFragment extends Fragment {
 
     @BindView(R.id.view_pager_result)
     ViewPager2 view_pager_result;
+
+    @BindView(R.id.recycler_fish_freshness)
+    RecyclerView recyclerView;
 
     String classifyResult;
 
@@ -100,6 +100,8 @@ public class ResultsFragment extends Fragment {
     DetectedImage detectedImage;
 
     ResultsImageAdapter resultsImageAdapter;
+
+    ResultsAdapter resultsAdapter;
 
     private static final String TAG = "ResultsFragment";
 
@@ -158,15 +160,10 @@ public class ResultsFragment extends Fragment {
 
             new Thread(() -> {
 
-                handler.post(() -> handleResult(cropped_fish_eye_uri, cropped_fish_gill_uri, eye_results, gill_results));
+                handler.post(() -> handleResult(cropped_fish_eye_uri, cropped_fish_gill_uri));
 
             }).start();
 
-//            classifyImage(detected_eye_bitmap);
-//            eye_status.setText(classifyResult);
-
-//            classifyImage(detected_gill_bitmap);
-//            gill_status.setText(classifyResult);
         });
 
         new Handler().postDelayed(() -> progressDialog.dismiss(), 2500);
@@ -242,48 +239,31 @@ public class ResultsFragment extends Fragment {
         }
     }
 
-    private void handleResult(List<Uri> cropped_bitmap_eye, List<Uri> cropped_bitmap_gill, List<Classifier.Recognition> eye_results, List<Classifier.Recognition> gill_results) {
+    List<String> list_eye_classifier = new ArrayList<>();
+    List<String> list_gill_classifier = new ArrayList<>();
+    LinearLayoutManager linearLayoutManager;
 
-        for (final Classifier.Recognition eye_result : eye_results) {
+    private void handleResult(List<Uri> cropped_eye_uri, List<Uri> cropped_gill_uri) {
 
-            final RectF location = eye_result.getLocation();
-            final String imageTitle = eye_result.getTitle();
-            final Float confidence = eye_result.getConfidence();
-            final int detectedClass = eye_result.getDetectedClass();
-
-            if (location != null && eye_result.getConfidence() >= MINIMUM_CONFIDENCE_TF_OD_API && eye_result.getTitle().equals("kepala")) {
-                Log.d(TAG, "handleResultLocation: "+location);
-                Log.d(TAG, "handleResultTitle: "+imageTitle);
-                Log.d(TAG, "handleResultConfidence: "+confidence);
-                Log.d(TAG, "handleResultClass: "+detectedClass);
-
-
-//                cropToFrameTransform.mapRect(location);
-//
-//                result.setLocation(location);
-//                mappedRecognitions.add(result);
-            }
+        for (int i = 0; i < cropped_eye_uri.size(); i++) {
+            detected_eye_bitmap = ImageUtils.getBitmap(getContext(), cropped_eye_uri.get(i));
+            classifyImage(detected_eye_bitmap);
+            list_eye_classifier.add(classifyResult);
         }
 
-        for (final Classifier.Recognition gill_result : gill_results) {
-            final RectF location = gill_result.getLocation();
-            final String imageTitle = gill_result.getTitle();
-            final Float confidence = gill_result.getConfidence();
-            final int detectedClass = gill_result.getDetectedClass();
 
-            if (location != null && gill_result.getConfidence() >= MINIMUM_CONFIDENCE_TF_OD_API && gill_result.getTitle().equals("ikan")) {
-                Log.d(TAG, "handleResultLocation: "+location);
-                Log.d(TAG, "handleResultTitle: "+imageTitle);
-                Log.d(TAG, "handleResultConfidence: "+confidence);
-                Log.d(TAG, "handleResultClass: "+detectedClass);
-//                cropToFrameTransform.mapRect(location);
-//
-//                result.setLocation(location);
-//                mappedRecognitions.add(result);
-            }
-        }
-//        tracker.trackResults(mappedRecognitions, new Random().nextInt());
-//        trackingOverlay.postInvalidate();
+//        for (int j = 0; j < cropped_eye_uri.size(); j++) {
+//            detected_gill_bitmap = ImageUtils.getBitmap(getContext(), cropped_gill_uri.get(j));
+//            classifyImage(detected_gill_bitmap);
+//            list_gill_classifier.add(classifyResult);
+//        }
+
+        recyclerView.setHasFixedSize(true);
+        linearLayoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(linearLayoutManager);
+        resultsAdapter = new ResultsAdapter(getActivity());
+        resultsAdapter.setResult_list(list_eye_classifier);
+        recyclerView.setAdapter(resultsAdapter);
 
     }
 
