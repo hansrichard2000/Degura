@@ -49,7 +49,8 @@
     <fragment
         android:id="@+id/fishGillFragment"
         android:name="com.uc.degura.view.main.FishGillFragment"
-        android:label="FishGillFragment" >
+        android:label="fragment_fish_gill"
+        tools:layout="@layout/fragment_fish_gill" >
         <action
             android:id="@+id/action_fishGillFragment_to_detectionFragment"
             app:destination="@id/detectionFragment"
