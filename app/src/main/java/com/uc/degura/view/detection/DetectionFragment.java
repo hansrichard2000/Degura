@@ -83,10 +83,6 @@ public class DetectionFragment extends Fragment {
 
     private FishImageAdapter fishImageAdapter;
 
-    Uri detected_eye_box;
-
-    Uri detected_gill_box;
-
     Uri cropped_eye;
     Uri cropped_gill;
 
@@ -128,9 +124,6 @@ public class DetectionFragment extends Fragment {
 
     protected int previewWidth = 0;
     protected int previewHeight = 0;
-
-    Uri cropped_fish_eye_uri;
-    Uri cropped_fish_gill_uri;
 
     Uri fish_eye_uri;
     Uri fish_gill_uri;

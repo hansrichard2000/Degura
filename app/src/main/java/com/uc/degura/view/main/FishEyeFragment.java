@@ -18,10 +18,12 @@ import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.provider.MediaStore;
 import android.util.Log;
@@ -29,16 +31,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.uc.degura.R;
 import com.uc.degura.env.ImageUtils;
+import com.uc.degura.model.InstructionNote;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,6 +56,20 @@ public class FishEyeFragment extends Fragment {
 
     @BindView(R.id.btn_gallery_eye)
     Button btn_gallery_eye;
+
+    @BindView(R.id.fish_eye_slider)
+    ViewPager2 fish_eye_slider;
+
+    @BindView(R.id.eye_page1)
+    ImageView slider1;
+
+    @BindView(R.id.eye_page2)
+    ImageView slider2;
+
+    @BindView(R.id.eye_page3)
+    ImageView slider3;
+
+    private FishEyeAdapter fishEyeAdapter;
 
     private long backPressedTime;
 
@@ -93,6 +113,36 @@ public class FishEyeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+
+        InstructionNote instruction1 = new InstructionNote(R.drawable.baseline_photo_camera_24, "Melakukan pengambilan gambar mata");
+        InstructionNote instruction2 = new InstructionNote(R.drawable.baseline_photo_camera_24, "Ambil gambar mata ikan dengan jarak +- 30 cm dari kamera");
+        InstructionNote instruction3 = new InstructionNote(R.drawable.baseline_photo_camera_24, "Sumber gambar dapat Anda ambil dari galeri hp Anda atau melakukan pengambilan gambar langsung");
+
+        List<InstructionNote> instruction_list = Arrays.asList(instruction1, instruction2, instruction3);
+
+        fishEyeAdapter = new FishEyeAdapter(getContext());
+        fishEyeAdapter.setInstructionList(instruction_list);
+
+        fish_eye_slider.setAdapter(fishEyeAdapter);
+
+        fish_eye_slider.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+                changeIndicatorColor();
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                super.onPageScrollStateChanged(state);
+                changeIndicatorColor();
+            }
+        });
 
         ActivityResultLauncher<Intent> cameraResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -155,5 +205,32 @@ public class FishEyeFragment extends Fragment {
             Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             galleryResultLauncher.launch(galleryIntent);
         });
+    }
+
+    private void changeIndicatorColor(){
+
+        int currentItem = fish_eye_slider.getCurrentItem();
+
+        switch (currentItem){
+
+            case 1 :
+                slider1.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.transparent_white));
+                slider2.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.degura_white));
+                slider3.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.transparent_white));
+                break;
+
+            case 2 :
+                slider1.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.transparent_white));
+                slider2.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.transparent_white));
+                slider3.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.degura_white));
+                break;
+
+            default:
+                slider1.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.degura_white));
+                slider2.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.transparent_white));
+                slider3.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.transparent_white));
+
+                break;
+        }
     }
 }
