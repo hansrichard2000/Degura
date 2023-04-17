@@ -57,8 +57,18 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.TextView
 //        final String title = getTitle_list().get(position);
         Log.d(TAG, "onBindViewHolder: "+fresh_result);
         int real_pos = position+1;
-        holder.fish_attr_txt.setText("Status Kesegaran Mata "+real_pos+" :");
-        holder.clasifier_result.setText(fresh_result);
+//        "eye-fresh", "eye-non-fresh", "gill-fresh", "gill-non-fresh"
+        if (fresh_result.equals("eye-fresh") || fresh_result.equals("eye-non-fresh")){
+            holder.fish_attr_txt.setText("Status Kesegaran Mata "+real_pos+" :");
+            holder.clasifier_result.setText(fresh_result);
+        } else if (fresh_result.equals("gill-fresh") || fresh_result.equals("gill-non-fresh")){
+            holder.fish_attr_txt.setText("Status Kesegaran Insang "+real_pos+" :");
+            holder.clasifier_result.setText(fresh_result);
+        }else {
+            holder.fish_attr_txt.setText("Tidak terdeteksi apapun");
+            holder.clasifier_result.setVisibility(View.GONE);
+        }
+
     }
 
     @Override

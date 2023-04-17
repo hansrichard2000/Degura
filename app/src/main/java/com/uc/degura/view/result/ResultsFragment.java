@@ -36,7 +36,7 @@ import android.widget.TextView;
 
 import com.uc.degura.R;
 import com.uc.degura.env.ImageUtils;
-import com.uc.degura.ml.ModelFish;
+import com.uc.degura.ml.ModelFishv5;
 import com.uc.degura.model.DetectedImage;
 import com.uc.degura.tflite.Classifier;
 import com.uc.degura.view.detection.FishImageAdapter;
@@ -93,7 +93,9 @@ public class ResultsFragment extends Fragment {
 
     Bitmap detected_gill_bitmap;
 
-    int imageSize = 224;
+    Bitmap cropped_eye_bitmap;
+
+    int imageSize = 416;
 
     Dialog progressDialog;
 
@@ -141,6 +143,8 @@ public class ResultsFragment extends Fragment {
 
         original_eye_bitmap = ImageUtils.getBitmap(this.getContext(), original_fish_eye_uri);
         original_gill_bitmap = ImageUtils.getBitmap(this.getContext(), original_fish_gill_uri);
+
+//        cropped_eye_bitmap = ImageUtils.getBitmap(this.getContext(), cropped_fish_eye_uri.get(0));
 
         Log.d(TAG, "onViewCreatedEyeBitmap: "+original_eye_bitmap);
         Log.d(TAG, "onViewCreatedGillBitmap: "+original_gill_bitmap);
@@ -248,17 +252,30 @@ public class ResultsFragment extends Fragment {
 
         for (int i = 0; i < cropped_eye_uri.size(); i++) {
             detected_eye_bitmap = ImageUtils.getBitmap(getContext(), cropped_eye_uri.get(i));
+            Log.d(TAG, "handleResultBitmap: "+detected_eye_bitmap);
             classifyImage(detected_eye_bitmap);
+            list_eye_classifier.add(classifyResult);
+            Log.d(TAG, "handleResultFirstStep: "+list_eye_classifier);
+        }
+
+//        detected_eye_bitmap = ImageUtils.getBitmap(getContext(), cropped_eye_uri.get(0));
+//        Log.d(TAG, "handleResultBitmap: "+detected_eye_bitmap);
+//        classifyImage(detected_eye_bitmap);
+//        list_eye_classifier.add(classifyResult);
+
+
+        for (int j = 0; j < cropped_gill_uri.size(); j++) {
+            detected_gill_bitmap = ImageUtils.getBitmap(getContext(), cropped_gill_uri.get(j));
+            Log.d(TAG, "handleResultBitmap: "+detected_gill_bitmap);
+            classifyImage(detected_gill_bitmap);
             list_eye_classifier.add(classifyResult);
         }
 
+        if (list_eye_classifier.isEmpty()){
+            list_eye_classifier.add("x");
+        }
 
-//        for (int j = 0; j < cropped_eye_uri.size(); j++) {
-//            detected_gill_bitmap = ImageUtils.getBitmap(getContext(), cropped_gill_uri.get(j));
-//            classifyImage(detected_gill_bitmap);
-//            list_gill_classifier.add(classifyResult);
-//        }
-
+        Log.d(TAG, "handleResultListClassification: "+list_eye_classifier);
         recyclerView.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -271,10 +288,10 @@ public class ResultsFragment extends Fragment {
     private void classifyImage(Bitmap image) {
 
         try {
-            ModelFish model = ModelFish.newInstance(getContext());
+            ModelFishv5 model = ModelFishv5.newInstance(getContext());
 
             // Creates inputs for reference.
-            TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, 224, 224, 3}, DataType.FLOAT32);
+            TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, imageSize, imageSize, 3}, DataType.FLOAT32);
             ByteBuffer byteBuffer = ByteBuffer.allocateDirect(4 * imageSize * imageSize * 3);
             byteBuffer.order(ByteOrder.nativeOrder());
 
@@ -295,7 +312,7 @@ public class ResultsFragment extends Fragment {
             inputFeature0.loadBuffer(byteBuffer);
 
             // Runs model inference and gets result.
-            ModelFish.Outputs outputs = model.process(inputFeature0);
+            ModelFishv5.Outputs outputs = model.process(inputFeature0);
             TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
 
             float[] confidences = outputFeature0.getFloatArray();
@@ -308,7 +325,7 @@ public class ResultsFragment extends Fragment {
                     maxPos = i;
                 }
             }
-            String[] classes = {"highly-fresh", "fresh", "not-fresh"};
+            String[] classes = {"eye-fresh", "eye-non-fresh", "gill-fresh", "gill-non-fresh"};
             classifyResult = classes[maxPos];
 
             // Releases model resources if no longer used.
