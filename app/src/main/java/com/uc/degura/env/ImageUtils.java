@@ -1,12 +1,16 @@
 package com.uc.degura.env;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import androidx.core.content.FileProvider;
 
@@ -14,9 +18,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Objects;
 
 /** Utility class for manipulating images. */
 public class ImageUtils {
+    private static final String TAG = "ImageUtils";
     // This value is 2 ^ 18 - 1, and is used to clamp the RGB values before their ranges
     // are normalized to eight bits.
     static final int kMaxChannelValue = 262143;
@@ -231,6 +238,42 @@ public class ImageUtils {
         return fish_image_uri;
     }
 
+    public static void saveImageLocal(Bitmap image, Context context, String fileName){
+        File imagesFolder = new File(Environment.getExternalStorageDirectory(), "data/deguraImages");
+        Uri fish_image_uri = null;
+        try {
+            imagesFolder.mkdir();
+            File file = new File(imagesFolder, fileName);
+            FileOutputStream stream = new FileOutputStream(file);
+            image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            stream.flush();
+            stream.close();
+            fish_image_uri = FileProvider.getUriForFile(context.getApplicationContext(), "com.uc.degura"+".provider", file);
+            Log.d(TAG, "saveImageLocal: "+fish_image_uri);
+        }catch (FileNotFoundException e){
+            e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+//        OutputStream fos;
+//        try {
+//            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q){
+//                ContentResolver contentResolver = context.getContentResolver();
+//                ContentValues contentValues = new ContentValues();
+//                contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName);
+//                contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg");
+//                Uri imageUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+//                Log.d(TAG, "saveImageLocal: "+imageUri);
+//                fos = contentResolver.openOutputStream(Objects.requireNonNull(imageUri));
+//                image.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+//                Objects.requireNonNull(fos);
+//
+//            }
+//        }catch (Exception e){
+//            throw new RuntimeException(e);
+//        }
+    }
+
     public static Bitmap getBitmap(Context context, Uri imageUri){
         Bitmap image = null;
         try {
@@ -244,6 +287,7 @@ public class ImageUtils {
     public static Uri cropImage(Bitmap image_bitmap, Context context, String file_name, RectF location){
 
         image_bitmap = Bitmap.createBitmap(image_bitmap, (int) location.left, (int) location.top, (int) location.width(), (int) location.height());
+        image_bitmap = Bitmap.createScaledBitmap(image_bitmap, 416, 416, false);
 
         Uri image_uri = saveImage(image_bitmap, context, file_name);
 

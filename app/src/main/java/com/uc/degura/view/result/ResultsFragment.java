@@ -36,7 +36,7 @@ import android.widget.TextView;
 
 import com.uc.degura.R;
 import com.uc.degura.env.ImageUtils;
-import com.uc.degura.ml.ModelFishv5;
+import com.uc.degura.ml.ModelFishv6;
 import com.uc.degura.model.DetectedImage;
 import com.uc.degura.tflite.Classifier;
 import com.uc.degura.view.detection.FishImageAdapter;
@@ -77,6 +77,10 @@ public class ResultsFragment extends Fragment {
 
     String classifyResult;
 
+    String classifyEyeResult;
+
+    String classifyGillResult;
+
     Uri original_fish_eye_uri;
 
     Uri original_fish_gill_uri;
@@ -94,6 +98,7 @@ public class ResultsFragment extends Fragment {
     Bitmap detected_gill_bitmap;
 
     Bitmap cropped_eye_bitmap;
+    Bitmap cropped_gill_bitmap;
 
     int imageSize = 416;
 
@@ -145,6 +150,10 @@ public class ResultsFragment extends Fragment {
         original_gill_bitmap = ImageUtils.getBitmap(this.getContext(), original_fish_gill_uri);
 
 //        cropped_eye_bitmap = ImageUtils.getBitmap(this.getContext(), cropped_fish_eye_uri.get(0));
+//        ImageUtils.saveImageLocal(cropped_eye_bitmap, this.getContext(), "TestGambarMata.jpg");
+//
+//        cropped_gill_bitmap = ImageUtils.getBitmap(this.getContext(), cropped_fish_gill_uri.get(0));
+//        ImageUtils.saveImageLocal(cropped_gill_bitmap, this.getContext(), "TestGambarInsang.jpg");
 
         Log.d(TAG, "onViewCreatedEyeBitmap: "+original_eye_bitmap);
         Log.d(TAG, "onViewCreatedGillBitmap: "+original_gill_bitmap);
@@ -243,7 +252,7 @@ public class ResultsFragment extends Fragment {
         }
     }
 
-    List<String> list_eye_classifier = new ArrayList<>();
+    List<String> list_part_classifier = new ArrayList<>();
     List<String> list_title = new ArrayList<>();
     List<String> list_gill_classifier = new ArrayList<>();
     LinearLayoutManager linearLayoutManager;
@@ -252,10 +261,10 @@ public class ResultsFragment extends Fragment {
 
         for (int i = 0; i < cropped_eye_uri.size(); i++) {
             detected_eye_bitmap = ImageUtils.getBitmap(getContext(), cropped_eye_uri.get(i));
-            Log.d(TAG, "handleResultBitmap: "+detected_eye_bitmap);
+            Log.d(TAG, "handleResultBitmapEye: "+detected_eye_bitmap);
             classifyImage(detected_eye_bitmap);
-            list_eye_classifier.add(classifyResult);
-            Log.d(TAG, "handleResultFirstStep: "+list_eye_classifier);
+            list_part_classifier.add(classifyResult);
+            Log.d(TAG, "handleResultFirstStep: "+list_part_classifier);
         }
 
 //        detected_eye_bitmap = ImageUtils.getBitmap(getContext(), cropped_eye_uri.get(0));
@@ -266,21 +275,21 @@ public class ResultsFragment extends Fragment {
 
         for (int j = 0; j < cropped_gill_uri.size(); j++) {
             detected_gill_bitmap = ImageUtils.getBitmap(getContext(), cropped_gill_uri.get(j));
-            Log.d(TAG, "handleResultBitmap: "+detected_gill_bitmap);
+            Log.d(TAG, "handleResultBitmapGill: "+detected_gill_bitmap);
             classifyImage(detected_gill_bitmap);
-            list_eye_classifier.add(classifyResult);
+            list_part_classifier.add(classifyResult);
         }
 
-        if (list_eye_classifier.isEmpty()){
-            list_eye_classifier.add("x");
+        if (list_part_classifier.isEmpty()){
+            list_part_classifier.add("x");
         }
 
-        Log.d(TAG, "handleResultListClassification: "+list_eye_classifier);
+        Log.d(TAG, "handleResultListClassification: "+list_part_classifier);
         recyclerView.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
         resultsAdapter = new ResultsAdapter(getActivity());
-        resultsAdapter.setResult_list(list_eye_classifier);
+        resultsAdapter.setResult_list(list_part_classifier);
         recyclerView.setAdapter(resultsAdapter);
 
     }
@@ -288,7 +297,7 @@ public class ResultsFragment extends Fragment {
     private void classifyImage(Bitmap image) {
 
         try {
-            ModelFishv5 model = ModelFishv5.newInstance(getContext());
+            ModelFishv6 model = ModelFishv6.newInstance(getContext());
 
             // Creates inputs for reference.
             TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, imageSize, imageSize, 3}, DataType.FLOAT32);
@@ -312,14 +321,15 @@ public class ResultsFragment extends Fragment {
             inputFeature0.loadBuffer(byteBuffer);
 
             // Runs model inference and gets result.
-            ModelFishv5.Outputs outputs = model.process(inputFeature0);
+            ModelFishv6.Outputs outputs = model.process(inputFeature0);
             TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
 
             float[] confidences = outputFeature0.getFloatArray();
             // find the index of the class with the biggest confidence.
             int maxPos = 0;
-            float maxConfidence = 0;
+            float maxConfidence = 0.1f;
             for (int i = 0; i < confidences.length; i++) {
+                Log.d(TAG, "classifyImageCondifence: "+confidences[i]);
                 if (confidences[i] > maxConfidence) {
                     maxConfidence = confidences[i];
                     maxPos = i;
@@ -331,10 +341,21 @@ public class ResultsFragment extends Fragment {
             // Releases model resources if no longer used.
             model.close();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            Log.e(TAG, "classifyImage: ", e);
+            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
+            alertBuilder.setTitle("Peringatan!");
+            alertBuilder.setMessage("Spesifikasi perangkat Anda belum bisa menggunakan aplikasi ini untuk melakukan deteksi kesegaran ikan Gurami. Anda dapat memakai degura lite.");
+            alertBuilder.setCancelable(true);
+            alertBuilder.setNegativeButton("Oke", (DialogInterface.OnClickListener) (dialog, which) -> {
+                // If user click no then dialog box is canceled.
+                dialog.cancel();
+            });
+
+            // Create the Alert dialog
+            AlertDialog alertDialog = alertBuilder.create();
+            // Show the Alert Dialog box
+            alertDialog.show();
         }
 
     }
-
-
 }
