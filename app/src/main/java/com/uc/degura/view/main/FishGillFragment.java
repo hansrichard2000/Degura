@@ -60,6 +60,9 @@ public class FishGillFragment extends Fragment {
     @BindView(R.id.gill_page3)
     ImageView slider3;
 
+    @BindView(R.id.gill_page4)
+    ImageView slider4;
+
     private FishGillAdapter fishGillAdapter;
 
     @BindView(R.id.btn_camera_gill)
@@ -90,11 +93,12 @@ public class FishGillFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        InstructionNote instruction1 = new InstructionNote(R.drawable.baseline_photo_camera_24, "Melakukan pengambilan gambar insang ikan");
-        InstructionNote instruction2 = new InstructionNote(R.drawable.baseline_photo_camera_24, "Ambil gambar insang ikan dengan jarak +- 30 cm dari kamera");
-        InstructionNote instruction3 = new InstructionNote(R.drawable.baseline_photo_camera_24, "Sumber gambar dapat Anda ambil dari galeri hp Anda atau melakukan pengambilan gambar langsung");
+        InstructionNote instruction1 = new InstructionNote(0, "", "Swipe ke kiri untuk membaca petunjuk cara mengambil gambar insang ikan Gurami");
+        InstructionNote instruction2 = new InstructionNote(R.drawable.baseline_photo_camera_24, "Ambil gambar insang ikan dengan jarak +- 30 cm dari kamera", "");
+        InstructionNote instruction3 = new InstructionNote(R.drawable.baseline_photo_camera_24, "Untuk bisa mendapat hasil yang akurat gunakan flash light dari kamera HP Anda saat mengambil gambar", "");
+        InstructionNote instruction4 = new InstructionNote(R.drawable.baseline_photo_camera_24, "Sumber gambar dapat Anda ambil dari galeri hp Anda atau melakukan pengambilan gambar langsung", "");
 
-        List<InstructionNote> instruction_list = Arrays.asList(instruction1, instruction2, instruction3);
+        List<InstructionNote> instruction_list = Arrays.asList(instruction1, instruction2, instruction3, instruction4);
 
         fishGillAdapter = new FishGillAdapter(getContext());
         fishGillAdapter.setInstructionNoteList(instruction_list);
@@ -227,19 +231,27 @@ public class FishGillFragment extends Fragment {
                 slider1.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.transparent_white));
                 slider2.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.degura_white));
                 slider3.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.transparent_white));
+                slider4.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.transparent_white));
                 break;
 
             case 2 :
                 slider1.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.transparent_white));
                 slider2.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.transparent_white));
                 slider3.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.degura_white));
+                slider4.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.transparent_white));
+                break;
+            case 3:
+                slider1.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.transparent_white));
+                slider2.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.transparent_white));
+                slider3.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.transparent_white));
+                slider4.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.degura_white));
                 break;
 
             default:
                 slider1.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.degura_white));
                 slider2.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.transparent_white));
                 slider3.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.transparent_white));
-
+                slider4.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.transparent_white));
                 break;
         }
     }
