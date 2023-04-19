@@ -1,7 +1,6 @@
 package com.uc.degura.view.main;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.uc.degura.R;
 import com.uc.degura.model.InstructionNote;
-import com.uc.degura.view.detection.FishImageAdapter;
 
 import java.util.List;
 

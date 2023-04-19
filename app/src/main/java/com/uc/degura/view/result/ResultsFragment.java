@@ -173,7 +173,7 @@ public class ResultsFragment extends Fragment {
 
             new Thread(() -> {
 
-                handler.post(() -> handleResult(cropped_fish_eye_uri, cropped_fish_gill_uri, eye_results, gill_results));
+                handler.post(() -> handleResult(cropped_fish_eye_uri, cropped_fish_gill_uri));
 
             }).start();
 
@@ -257,7 +257,7 @@ public class ResultsFragment extends Fragment {
     List<String> list_gill_classifier = new ArrayList<>();
     LinearLayoutManager linearLayoutManager;
 
-    private void handleResult(List<Uri> cropped_eye_uri, List<Uri> cropped_gill_uri, List<Classifier.Recognition> eye_results, List<Classifier.Recognition> gill_results) {
+    private void handleResult(List<Uri> cropped_eye_uri, List<Uri> cropped_gill_uri) {
 
         for (int i = 0; i < cropped_eye_uri.size(); i++) {
             detected_eye_bitmap = ImageUtils.getBitmap(getContext(), cropped_eye_uri.get(i));
