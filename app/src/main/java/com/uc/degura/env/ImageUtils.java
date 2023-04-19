@@ -238,41 +238,24 @@ public class ImageUtils {
         return fish_image_uri;
     }
 
-    public static void saveImageLocal(Bitmap image, Context context, String fileName){
-        File imagesFolder = new File(Environment.getExternalStorageDirectory(), "data/deguraImages");
-        Uri fish_image_uri = null;
-        try {
-            imagesFolder.mkdir();
-            File file = new File(imagesFolder, fileName);
-            FileOutputStream stream = new FileOutputStream(file);
-            image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-            stream.flush();
-            stream.close();
-            fish_image_uri = FileProvider.getUriForFile(context.getApplicationContext(), "com.uc.degura"+".provider", file);
-            Log.d(TAG, "saveImageLocal: "+fish_image_uri);
-        }catch (FileNotFoundException e){
-            e.printStackTrace();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-//        OutputStream fos;
+//    public static void saveImageLocal(Bitmap image, Context context, String fileName){
+//        File imagesFolder = new File(Environment.getExternalStorageDirectory(), "data/deguraImages");
+//        Uri fish_image_uri = null;
 //        try {
-//            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q){
-//                ContentResolver contentResolver = context.getContentResolver();
-//                ContentValues contentValues = new ContentValues();
-//                contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName);
-//                contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg");
-//                Uri imageUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
-//                Log.d(TAG, "saveImageLocal: "+imageUri);
-//                fos = contentResolver.openOutputStream(Objects.requireNonNull(imageUri));
-//                image.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-//                Objects.requireNonNull(fos);
-//
-//            }
-//        }catch (Exception e){
+//            imagesFolder.mkdir();
+//            File file = new File(imagesFolder, fileName);
+//            FileOutputStream stream = new FileOutputStream(file);
+//            image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+//            stream.flush();
+//            stream.close();
+//            fish_image_uri = FileProvider.getUriForFile(context.getApplicationContext(), "com.uc.degura"+".provider", file);
+//            Log.d(TAG, "saveImageLocal: "+fish_image_uri);
+//        }catch (FileNotFoundException e){
+//            e.printStackTrace();
+//        } catch (IOException e) {
 //            throw new RuntimeException(e);
 //        }
-    }
+//    }
 
     public static Bitmap getBitmap(Context context, Uri imageUri){
         Bitmap image = null;
