@@ -37,7 +37,6 @@ import android.widget.TextView;
 import com.uc.degura.R;
 import com.uc.degura.env.ImageUtils;
 import com.uc.degura.ml.ModelFishv550ft;
-import com.uc.degura.ml.ModelFishv6;
 import com.uc.degura.model.DetectedImage;
 import com.uc.degura.tflite.Classifier;
 import com.uc.degura.view.detection.FishImageAdapter;
@@ -131,10 +130,6 @@ public class ResultsFragment extends Fragment {
 
         detectedImage = getArguments().getParcelable("detected_images");
 
-        List<Classifier.Recognition> eye_results = detectedImage.getList_eye_result();
-
-        List<Classifier.Recognition> gill_results = detectedImage.getList_gill_result();
-
         original_fish_eye_uri = detectedImage.getFish_eye_uri();
         original_fish_gill_uri = detectedImage.getFish_gill_uri();
 
@@ -149,12 +144,6 @@ public class ResultsFragment extends Fragment {
 
         original_eye_bitmap = ImageUtils.getBitmap(this.getContext(), original_fish_eye_uri);
         original_gill_bitmap = ImageUtils.getBitmap(this.getContext(), original_fish_gill_uri);
-
-//        cropped_eye_bitmap = ImageUtils.getBitmap(this.getContext(), cropped_fish_eye_uri.get(0));
-//        ImageUtils.saveImageLocal(cropped_eye_bitmap, this.getContext(), "TestGambarMata.jpg");
-//
-//        cropped_gill_bitmap = ImageUtils.getBitmap(this.getContext(), cropped_fish_gill_uri.get(0));
-//        ImageUtils.saveImageLocal(cropped_gill_bitmap, this.getContext(), "TestGambarInsang.jpg");
 
         Log.d(TAG, "onViewCreatedEyeBitmap: "+original_eye_bitmap);
         Log.d(TAG, "onViewCreatedGillBitmap: "+original_gill_bitmap);
@@ -253,8 +242,7 @@ public class ResultsFragment extends Fragment {
     }
 
     List<String> list_part_classifier = new ArrayList<>();
-    List<String> list_title = new ArrayList<>();
-    List<String> list_gill_classifier = new ArrayList<>();
+
     LinearLayoutManager linearLayoutManager;
 
     private void handleResult(List<Uri> cropped_eye_uri, List<Uri> cropped_gill_uri) {
@@ -266,11 +254,6 @@ public class ResultsFragment extends Fragment {
             list_part_classifier.add(classifyResult);
             Log.d(TAG, "handleResultFirstStep: "+list_part_classifier);
         }
-
-//        detected_eye_bitmap = ImageUtils.getBitmap(getContext(), cropped_eye_uri.get(0));
-//        Log.d(TAG, "handleResultBitmap: "+detected_eye_bitmap);
-//        classifyImage(detected_eye_bitmap);
-//        list_eye_classifier.add(classifyResult);
 
 
         for (int j = 0; j < cropped_gill_uri.size(); j++) {
