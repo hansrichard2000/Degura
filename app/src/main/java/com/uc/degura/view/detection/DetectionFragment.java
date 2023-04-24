@@ -24,6 +24,8 @@ import androidx.navigation.Navigation;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
@@ -189,14 +191,40 @@ public class DetectionFragment extends Fragment {
             progressDialog.show();
             progressDialog.setOnDismissListener(dialog -> {
 
-                Handler handler = new Handler();
+                Handler handler = new Handler(Looper.getMainLooper()){
+                    @Override
+                    public void handleMessage(@NonNull Message msg) {
+                        super.handleMessage(msg);
+                        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
+                        alertBuilder.setTitle("Peringatan!");
+                        alertBuilder.setMessage("Spesifikasi smartphone Anda belum kompatibel untuk menjalankan aplikasi ini. Anda bisa menggunakan aplikasi Degura Lite.");
+                        alertBuilder.setCancelable(true);
+
+                        alertBuilder.setPositiveButton("Oke", (DialogInterface.OnClickListener) (dialog1, which) -> {
+                            NavDirections action;
+                            action = DetectionFragmentDirections.actionDetectionFragmentToFishEyeFragment();
+                            Navigation.findNavController(v).navigate(action);
+                        });
+
+                        // Create the Alert dialog
+                        AlertDialog alertDialog = alertBuilder.create();
+                        // Show the Alert Dialog box
+                        alertDialog.show();
+                    }
+                };
 
                 new Thread(() -> {
                     Log.d(TAG, "Recognize Fish Eye Bitmap Debug: "+fish_eye_bitmap.toString());
 
-                    final List<Classifier.Recognition> fish_eye_results = detector.recognizeImage(fish_eye_bitmap);
-                    final List<Classifier.Recognition> fish_gill_results = detector.recognizeImage(fish_gill_bitmap);
-                    handler.post(() -> handleResult(fish_eye_bitmap, fish_gill_bitmap, fish_eye_results, fish_gill_results));
+                    try{
+                        final List<Classifier.Recognition> fish_eye_results = detector.recognizeImage(fish_eye_bitmap);
+                        final List<Classifier.Recognition> fish_gill_results = detector.recognizeImage(fish_gill_bitmap);
+                        handler.post(() -> handleResult(fish_eye_bitmap, fish_gill_bitmap, fish_eye_results, fish_gill_results));
+                    }catch (Exception e){
+                        e.printStackTrace();
+                        Message message = handler.obtainMessage();
+                        message.sendToTarget();
+                    }
 
                 }).start();
             });

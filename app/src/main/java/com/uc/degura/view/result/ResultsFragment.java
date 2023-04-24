@@ -148,6 +148,9 @@ public class ResultsFragment extends Fragment {
         Log.d(TAG, "onViewCreatedEyeBitmap: "+original_eye_bitmap);
         Log.d(TAG, "onViewCreatedGillBitmap: "+original_gill_bitmap);
 
+//        cropped_eye_bitmap = ImageUtils.getBitmap(this.getContext(), cropped_fish_eye_uri.get(0));
+//        cropped_gill_bitmap = ImageUtils.getBitmap(this.getContext(), cropped_fish_gill_uri.get(0));
+
         progressDialog = new Dialog(getActivity(), R.style.DeguraLoadingTheme);
         View loadingView = LayoutInflater.from(getContext()).inflate(R.layout.loading_screen, null);
         WindowManager.LayoutParams params = progressDialog.getWindow().getAttributes();
@@ -168,7 +171,7 @@ public class ResultsFragment extends Fragment {
 
         }).start();
 
-        new Handler().postDelayed(() -> progressDialog.dismiss(), 2500);
+        new Handler().postDelayed(() -> progressDialog.dismiss(), 1500);
 
         List<Bitmap> fish_results_list = Arrays.asList(original_eye_bitmap, original_gill_bitmap);
 
