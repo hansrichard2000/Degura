@@ -168,17 +168,16 @@ public class ResultsFragment extends Fragment {
         progressDialog.getWindow().setBackgroundDrawableResource(R.color.transparent_black);
         progressDialog.getWindow().setGravity(Gravity.CENTER);
         progressDialog.show();
-        progressDialog.setOnDismissListener(dialog -> {
+//        progressDialog.setOnDismissListener(dialog -> {
+//        });
 
-            Handler handler = new Handler();
+        Handler handler = new Handler();
 
-            new Thread(() -> {
+        new Thread(() -> {
 
-                handler.post(() -> handleResult(cropped_fish_eye_uri, cropped_fish_gill_uri));
+            handler.post(() -> handleResult(cropped_fish_eye_uri, cropped_fish_gill_uri));
 
-            }).start();
-
-        });
+        }).start();
 
         new Handler().postDelayed(() -> progressDialog.dismiss(), 2500);
 
