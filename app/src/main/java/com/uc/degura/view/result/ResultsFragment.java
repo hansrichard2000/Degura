@@ -36,7 +36,7 @@ import android.widget.TextView;
 
 import com.uc.degura.R;
 import com.uc.degura.env.ImageUtils;
-import com.uc.degura.ml.ModelFishv550ft;
+import com.uc.degura.ml.ModelFishv7132;
 import com.uc.degura.model.DetectedImage;
 import com.uc.degura.tflite.Classifier;
 import com.uc.degura.view.detection.FishImageAdapter;
@@ -283,7 +283,7 @@ public class ResultsFragment extends Fragment {
     private void classifyImage(Bitmap image) {
 
         try {
-            ModelFishv550ft model = ModelFishv550ft.newInstance(getContext());
+            ModelFishv7132 model = ModelFishv7132.newInstance(getContext());
 
             // Creates inputs for reference.
             TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, imageSize, imageSize, 3}, DataType.FLOAT32);
@@ -307,7 +307,7 @@ public class ResultsFragment extends Fragment {
             inputFeature0.loadBuffer(byteBuffer);
 
             // Runs model inference and gets result.
-            ModelFishv550ft.Outputs outputs = model.process(inputFeature0);
+            ModelFishv7132.Outputs outputs = model.process(inputFeature0);
             TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
 
             float[] confidences = outputFeature0.getFloatArray();
