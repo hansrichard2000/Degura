@@ -216,15 +216,15 @@ public class DetectionFragment extends Fragment {
                 new Thread(() -> {
                     Log.d(TAG, "Recognize Fish Eye Bitmap Debug: "+fish_eye_bitmap.toString());
 
-                    try{
+//                    try{
                         final List<Classifier.Recognition> fish_eye_results = detector.recognizeImage(fish_eye_bitmap);
                         final List<Classifier.Recognition> fish_gill_results = detector.recognizeImage(fish_gill_bitmap);
                         handler.post(() -> handleResult(fish_eye_bitmap, fish_gill_bitmap, fish_eye_results, fish_gill_results));
-                    }catch (Exception e){
-                        e.printStackTrace();
-                        Message message = handler.obtainMessage();
-                        message.sendToTarget();
-                    }
+//                    }catch (Exception e){
+//                        e.printStackTrace();
+//                        Message message = handler.obtainMessage();
+//                        message.sendToTarget();
+//                    }
 
                 }).start();
             });
