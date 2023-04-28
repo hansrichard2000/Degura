@@ -12,10 +12,17 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <item name="colorButtonNormal">@color/degura_blue</item>
+        <item name="colorOnInstruction">@color/degura_blue</item>
     </style>
 
     <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.Light">
         <item name="android:fontFamily">@font/sansation_regular</item>
+    </style>
+
+    <style name="BlueButtonTheme" parent="ThemeOverlay.AppCompat.Light">
+        <item name="colorPrimary">@color/degura_blue</item>
+        <item name="colorSecondary">@color/white</item>
     </style>
 
     <style name="OrangeButtonTheme" parent="ThemeOverlay.AppCompat.Light">
@@ -26,6 +33,19 @@
     <style name="DeguraLoadingTheme" parent="Theme.AppCompat.Light.DialogWhenLarge">
         <item name="android:windowIsFloating">false</item>
         <item name = "android:windowBackground" >@color/transparent_black</item >
+    </style>
+
+    <style name="AlertDialogTheme" parent="android:Theme.Material.Light.Dialog.Alert">
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+    </style>
+
+    <style name="NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/degura_orange</item>
+    </style>
+
+    <style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">#00f</item>
     </style>
 
 </resources>

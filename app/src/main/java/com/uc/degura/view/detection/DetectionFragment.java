@@ -62,7 +62,7 @@ import butterknife.ButterKnife;
 
 public class DetectionFragment extends Fragment {
 
-    public static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.5f;
+    public static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.75f;
 
     @BindView(R.id.page1)
     ImageView slider1;
@@ -104,11 +104,11 @@ public class DetectionFragment extends Fragment {
 
     private static final Logger LOGGER = new Logger();
 
-    public static final int TF_OD_API_INPUT_SIZE = 416;
+    public static final int TF_OD_API_INPUT_SIZE = 608;
 
     private static final boolean TF_OD_API_IS_QUANTIZED = true;
 
-    private static final String TF_OD_API_MODEL_FILE = "yolov4-tiny-fish-partv4-fp16.tflite";
+    private static final String TF_OD_API_MODEL_FILE = "yolov4-tiny-fish-partv4-608-fp16.tflite";
 
     private static final String TF_OD_API_LABELS_FILE = "file:///android_asset/coco.txt";
 
@@ -242,7 +242,7 @@ public class DetectionFragment extends Fragment {
         });
 
         btn_delete_img.setOnClickListener(v -> {
-            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
+            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity(), R.style.AlertDialogTheme);
             alertBuilder.setTitle("Peringatan!");
             alertBuilder.setMessage("Anda yakin ingin membuang kedua gambar yang sudah Anda ambil?");
             alertBuilder.setCancelable(true);
@@ -260,6 +260,7 @@ public class DetectionFragment extends Fragment {
 
             // Create the Alert dialog
             AlertDialog alertDialog = alertBuilder.create();
+
             // Show the Alert Dialog box
             alertDialog.show();
 

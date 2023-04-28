@@ -58,6 +58,7 @@
             android:background="@drawable/blue_btn_background"
             android:text="@string/detection_text"
             android:textSize="16sp"
+            android:theme="@style/BlueButtonTheme"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
