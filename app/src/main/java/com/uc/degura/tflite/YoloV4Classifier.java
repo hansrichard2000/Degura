@@ -142,7 +142,7 @@ public class YoloV4Classifier implements Classifier {
     private static final float IMAGE_STD = 255.0f;
 
     //config yolov4
-    private static final int INPUT_SIZE = 416;
+    private static final int INPUT_SIZE = 608;
     private static final int[] OUTPUT_WIDTH = new int[]{52, 26, 13};
 
     private static final int[][] MASKS = new int[][]{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}};
@@ -162,7 +162,7 @@ public class YoloV4Classifier implements Classifier {
     private static boolean isTiny = true;
 
     // config yolov4 tiny
-    private static final int[] OUTPUT_WIDTH_TINY = new int[]{2535, 2535};
+    private static final int[] OUTPUT_WIDTH_TINY = new int[]{5415, 5415};
     private static final int[] OUTPUT_WIDTH_FULL = new int[]{10647, 10647};
     private static final int[][] MASKS_TINY = new int[][]{{3, 4, 5}, {1, 2, 3}};
     private static final int[] ANCHORS_TINY = new int[]{

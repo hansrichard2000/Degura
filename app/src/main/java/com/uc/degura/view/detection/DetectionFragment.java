@@ -104,11 +104,11 @@ public class DetectionFragment extends Fragment {
 
     private static final Logger LOGGER = new Logger();
 
-    public static final int TF_OD_API_INPUT_SIZE = 416;
+    public static final int TF_OD_API_INPUT_SIZE = 608;
 
     private static final boolean TF_OD_API_IS_QUANTIZED = true;
 
-    private static final String TF_OD_API_MODEL_FILE = "yolov4-tiny-fish-partv4-fp16.tflite";
+    private static final String TF_OD_API_MODEL_FILE = "yolov4-tiny-fish-partv4-608-fp16.tflite";
 
     private static final String TF_OD_API_LABELS_FILE = "file:///android_asset/coco.txt";
 
