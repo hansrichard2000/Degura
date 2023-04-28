@@ -242,7 +242,7 @@ public class DetectionFragment extends Fragment {
         });
 
         btn_delete_img.setOnClickListener(v -> {
-            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
+            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity(), R.style.AlertDialogTheme);
             alertBuilder.setTitle("Peringatan!");
             alertBuilder.setMessage("Anda yakin ingin membuang kedua gambar yang sudah Anda ambil?");
             alertBuilder.setCancelable(true);
@@ -260,6 +260,7 @@ public class DetectionFragment extends Fragment {
 
             // Create the Alert dialog
             AlertDialog alertDialog = alertBuilder.create();
+
             // Show the Alert Dialog box
             alertDialog.show();
 

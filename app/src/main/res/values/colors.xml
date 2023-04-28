@@ -6,9 +6,14 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
+    <color name="grey">#FF808080</color>
+    <color name="darkgrey">#FF3D3D3D</color>
     <color name="transparent_black">#80000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="transparent_white">#4DFFFFFF</color>
+    <color name="degura_soft_button">#FFE7EFFF</color>
+    <color name="degura_dark_blue">#FF0F035B</color>
+    <color name="degura_secondary_dark_blue">#FF005CAF</color>
     <color name="degura_blue">#FF0057FF</color>
     <color name="degura_secondary_blue">#FF0085FF</color>
     <color name="degura_orange">#FFFF4D00</color>

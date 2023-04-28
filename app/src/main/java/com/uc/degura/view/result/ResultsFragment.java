@@ -199,7 +199,7 @@ public class ResultsFragment extends Fragment {
         });
 
         back_from_result.setOnClickListener(v -> {
-            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
+            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity(), R.style.AlertDialogTheme);
             alertBuilder.setTitle("Peringatan!");
             alertBuilder.setMessage("Anda akan kembali ke halaman pertama dan membuang kedua gambar yang sudah dideteksi.");
             alertBuilder.setCancelable(true);
