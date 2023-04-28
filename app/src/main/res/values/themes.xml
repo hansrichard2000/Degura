@@ -35,9 +35,13 @@
         <item name = "android:windowBackground" >@color/transparent_black</item >
     </style>
 
-    <style name="AlertDialogTheme" parent="android:Theme.Material.Light.Dialog.Alert">
-        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
-        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+    <style name="AlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+        <item name="android:buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+        <item name="android:windowBackground">@color/white</item >
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textColorPrimary">@color/black</item>
+        <item name="colorAccent">@color/white</item>
     </style>
 
     <style name="NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
