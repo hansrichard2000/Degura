@@ -62,7 +62,7 @@ import butterknife.ButterKnife;
 
 public class DetectionFragment extends Fragment {
 
-    public static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.5f;
+    public static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.55f;
 
     @BindView(R.id.page1)
     ImageView slider1;
