@@ -159,8 +159,8 @@ public class FishEyeFragment extends Fragment {
                         // There are no request codes
                         Intent data = result.getData();
                         Bitmap fish_eye_image = (Bitmap) data.getExtras().get("data");
-                        int dimension = Math.min(fish_eye_image.getWidth(), fish_eye_image.getHeight());
-                        fish_eye_image = ThumbnailUtils.extractThumbnail(fish_eye_image, dimension, dimension);
+//                        int dimension = Math.min(fish_eye_image.getWidth(), fish_eye_image.getHeight());
+//                        fish_eye_image = ThumbnailUtils.extractThumbnail(fish_eye_image, dimension, dimension);
 
                         Log.d(TAG, "Image Bitmap Debug: "+fish_eye_image.toString());
 

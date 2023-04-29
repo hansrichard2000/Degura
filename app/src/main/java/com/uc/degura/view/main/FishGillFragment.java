@@ -139,8 +139,8 @@ public class FishGillFragment extends Fragment {
                         // There are no request codes
                         Intent data = result.getData();
                         Bitmap fish_gill_image = (Bitmap) data.getExtras().get("data");
-                        int dimension = Math.min(fish_gill_image.getWidth(), fish_gill_image.getHeight());
-                        fish_gill_image = ThumbnailUtils.extractThumbnail(fish_gill_image, dimension, dimension);
+//                        int dimension = Math.max(fish_gill_image.getWidth(), fish_gill_image.getHeight());
+//                        fish_gill_image = ThumbnailUtils.extractThumbnail(fish_gill_image, dimension, dimension);
 
                         Log.d(TAG, "Image Bitmap Debug: "+fish_gill_image.toString());
 

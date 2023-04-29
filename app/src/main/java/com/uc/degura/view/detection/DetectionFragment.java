@@ -62,7 +62,7 @@ import butterknife.ButterKnife;
 
 public class DetectionFragment extends Fragment {
 
-    public static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.75f;
+    public static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.5f;
 
     @BindView(R.id.page1)
     ImageView slider1;
@@ -150,9 +150,9 @@ public class DetectionFragment extends Fragment {
         fish_eye_bitmap = ImageUtils.getBitmap(this.getContext(), fish_eye_uri);
         fish_gill_bitmap = ImageUtils.getBitmap(this.getContext(), fish_gill_uri);
 
-        fish_eye_bitmap = Utils.processBitmap(fish_eye_bitmap, TF_OD_API_INPUT_SIZE);
-
-        fish_gill_bitmap = Utils.processBitmap(fish_gill_bitmap, TF_OD_API_INPUT_SIZE);
+//        fish_eye_bitmap = Utils.processBitmap(fish_eye_bitmap, TF_OD_API_INPUT_SIZE);
+//
+//        fish_gill_bitmap = Utils.processBitmap(fish_gill_bitmap, TF_OD_API_INPUT_SIZE);
 
         List<Bitmap> fish_images_list = Arrays.asList(fish_eye_bitmap, fish_gill_bitmap);
 
