@@ -4,8 +4,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="app_title">DeGura</string>
     <string name="app_subtitle">"Deteksi Kesegaran Ikan Gurami"</string>
-    <string name="app_main_title_eye">Langkah 1</string>
-    <string name="app_main_title_gill">Langkah 2</string>
+    <string name="app_main_title_eye">Pengambilan Gambar Mata</string>
+    <string name="app_main_title_gill">Pengambilan Gambar Insang</string>
     <string name="fish_eye_instruct">Ambil gambar mata ikan melalui</string>
     <string name="fish_gill_instruct">Ambil gambar insang ikan melalui</string>
     <string name="phone_gallery">Galeri</string>
