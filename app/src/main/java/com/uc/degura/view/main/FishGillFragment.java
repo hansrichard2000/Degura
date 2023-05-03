@@ -97,7 +97,7 @@ public class FishGillFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         InstructionNote instruction1 = new InstructionNote(0, "", "Swipe ke kiri untuk membaca petunjuk cara mengambil gambar insang ikan Gurami");
-        InstructionNote instruction2 = new InstructionNote(R.drawable.slide_insang_1, "Ambil gambar insang ikan dengan jarak ideal dari kamera", "");
+        InstructionNote instruction2 = new InstructionNote(R.drawable.slide_insang_1, "Ambil gambar insang dari ikan Gurami yang sama dengan jarak ideal dari kamera", "");
         InstructionNote instruction3 = new InstructionNote(R.drawable.slide_insang_2, "Pastikan hasil gambar memiliki pencahayaan yang baik, tidak blur, dan tidak terhalang tangan", "");
         InstructionNote instruction4 = new InstructionNote(R.drawable.slide_insang_3, "Untuk bisa mendapat hasil yang akurat Anda dapat memakai flash light dari kamera HP Anda saat mengambil gambar", "");
         InstructionNote instruction5 = new InstructionNote(R.drawable.slide_insang_4, "Sumber gambar dapat Anda ambil dari galeri hp Anda atau melakukan pengambilan gambar langsung", "");

@@ -121,7 +121,7 @@ public class FishEyeFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         InstructionNote instruction1 = new InstructionNote(0, "", "Swipe ke kiri untuk membaca petunjuk cara mengambil gambar mata ikan Gurami");
-        InstructionNote instruction2 = new InstructionNote(R.drawable.slide_mata_1, "Pastikan gambar ikan yang diambil adalah ikan Gurami.", "");
+        InstructionNote instruction2 = new InstructionNote(R.drawable.slide_mata_1, "Pastikan gambar yang diambil adalah gambar sebuah mata ikan Gurami.", "");
         InstructionNote instruction3 = new InstructionNote(R.drawable.slide_mata_2, "Ambil gambar mata ikan dengan jarak +- 15 cm dari kamera", "");
         InstructionNote instruction4 = new InstructionNote(R.drawable.slide_mata_3, "Pastikan hasil dari pengambilan gambar memiliki pencahayaan yang baik dan terlihat jelas", "");
         InstructionNote instruction5 = new InstructionNote(R.drawable.slide_mata_4, "Sumber gambar dapat Anda ambil dari galeri hp Anda atau melakukan pengambilan gambar langsung", "");
