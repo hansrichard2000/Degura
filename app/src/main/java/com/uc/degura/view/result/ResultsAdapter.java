@@ -56,19 +56,19 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.TextView
         final String fresh_result = getResult_list().get(position);
 //        final String title = getTitle_list().get(position);
         Log.d(TAG, "onBindViewHolder: "+fresh_result);
-        int real_pos = position+1;
+//        int real_pos = position+1;
 //        "eye-fresh", "eye-non-fresh", "gill-fresh", "gill-non-fresh"
         if (fresh_result.equals("eye-fresh")){
-            holder.fish_attr_txt.setText("Status Kesegaran Mata "+real_pos+" :");
+            holder.fish_attr_txt.setText("Status Kesegaran Mata :");
             holder.clasifier_result.setText("segar");
         } else if (fresh_result.equals("eye-non-fresh")) {
-            holder.fish_attr_txt.setText("Status Kesegaran Mata "+real_pos+" :");
+            holder.fish_attr_txt.setText("Status Kesegaran Mata :");
             holder.clasifier_result.setText("tidak segar");
         } else if (fresh_result.equals("gill-fresh")){
-            holder.fish_attr_txt.setText("Status Kesegaran Insang "+real_pos+" :");
+            holder.fish_attr_txt.setText("Status Kesegaran Insang :");
             holder.clasifier_result.setText("segar");
         } else if (fresh_result.equals("gill-non-fresh")) {
-            holder.fish_attr_txt.setText("Status Kesegaran Insang "+real_pos+" :");
+            holder.fish_attr_txt.setText("Status Kesegaran Insang :");
             holder.clasifier_result.setText("tidak segar");
         } else {
             holder.fish_attr_txt.setText("Tidak terdeteksi apapun");

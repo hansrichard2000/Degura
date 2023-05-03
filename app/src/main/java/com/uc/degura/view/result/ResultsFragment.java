@@ -60,6 +60,9 @@ public class ResultsFragment extends Fragment {
     @BindView(R.id.result_image_txt)
     TextView result_image_txt;
 
+    @BindView(R.id.final_result)
+    TextView final_result;
+
     @BindView(R.id.page1result)
     ImageView page1result;
 
@@ -169,6 +172,7 @@ public class ResultsFragment extends Fragment {
 
             handler.post(() -> handleResult(cropped_fish_eye_uri, cropped_fish_gill_uri));
 
+
         }).start();
 
         new Handler().postDelayed(() -> progressDialog.dismiss(), 1500);
@@ -277,6 +281,28 @@ public class ResultsFragment extends Fragment {
         resultsAdapter = new ResultsAdapter(getActivity());
         resultsAdapter.setResult_list(list_part_classifier);
         recyclerView.setAdapter(resultsAdapter);
+
+        if (list_part_classifier.size() == 2){
+            if (list_part_classifier.get(0) == "eye-fresh" && list_part_classifier.get(1) == "gill-fresh"){
+                final_result.setText("Ikan Gurami masih dalam kondisi segar");
+                final_result.setVisibility(View.VISIBLE);
+            }else if (list_part_classifier.get(0) == "eye-fresh" && list_part_classifier.get(1) != "gill-fresh"){
+                final_result.setText("Ikan Gurami sudah tidak segar karena kondisi insangnya");
+                final_result.setVisibility(View.VISIBLE);
+            }else if (list_part_classifier.get(0) != "eye-fresh" && list_part_classifier.get(1) == "gill-fresh"){
+                final_result.setText("Ikan Gurami sudah tidak segar karena kondisi matanya");
+                final_result.setVisibility(View.VISIBLE);
+            }else if (list_part_classifier.get(0) != "eye-fresh" && list_part_classifier.get(1) != "gill-fresh"){
+                final_result.setText("Ikan Gurami sudah tidak segar sama sekali");
+                final_result.setVisibility(View.VISIBLE);
+            }else{
+                final_result.setText("");
+                final_result.setVisibility(View.GONE);
+            }
+        }else{
+            final_result.setText("");
+            final_result.setVisibility(View.GONE);
+        }
 
     }
 

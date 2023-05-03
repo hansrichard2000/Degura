@@ -130,8 +130,15 @@ public class DetectionFragment extends Fragment {
 
     Uri fish_eye_uri;
 
-    Uri fish_eye_uri_test;
     Uri fish_gill_uri;
+
+    RectF location_eye_max;
+
+    RectF location_gill_max;
+
+    Float confidence_eye_max = 0f;
+
+    Float confidence_gill_max = 0f;
 
     private Bitmap fish_eye_bitmap;
     private Bitmap fish_gill_bitmap;
@@ -382,33 +389,19 @@ public class DetectionFragment extends Fragment {
             final Float confidence = eye_result.getConfidence();
             final int detectedClass = eye_result.getDetectedClass();
 
-
-//            if (imageTitle.equals("ikan")){
-//                Log.d(TAG, "handleResultLocation: "+location);
-//                Log.d(TAG, "handleResultTitle: "+imageTitle);
-//                Log.d(TAG, "handleResultConfidence: "+confidence);
-//                Log.d(TAG, "handleResultClass: "+detectedClass);
-//            }else{
-//                Log.d(TAG, "handleResult: Result not Ikan");
-//            }
-
             if (location != null && eye_result.getConfidence() >= MINIMUM_CONFIDENCE_TF_OD_API && eye_result.getTitle().equals("mata")) {
-                part_position += 1;
-                cropped_eye = ImageUtils.cropImage(bitmap_eye, getContext(), "cropped_fish_eye"+location+".jpg", location);
-                list_cropped_eye.add(cropped_eye);
-                Log.d(TAG, "handleResultLocation: "+location);
-                Log.d(TAG, "handleResultTitle: "+imageTitle);
-                Log.d(TAG, "handleResultConfidence: "+confidence);
-                Log.d(TAG, "handleResultClass: "+detectedClass);
-                Log.d(TAG, "handleResultCroppedImg: "+list_cropped_eye);
-                eye_canvas.drawRect(location, paint);
-                eye_canvas.drawText(imageTitle+" "+part_position+" | "+confidence, location.left, location.top-5f, textPaint);
+//                part_position += 1;
+                if (eye_result.getConfidence() > confidence_eye_max){
+                    confidence_eye_max = confidence;
+                    location_eye_max = location;
 
+                    Log.d(TAG, "handleResultLocation: "+location);
+                    Log.d(TAG, "handleResultTitle: "+imageTitle);
+                    Log.d(TAG, "handleResultConfidence: "+confidence);
+                    Log.d(TAG, "handleResultClass: "+detectedClass);
+                    Log.d(TAG, "handleResultCroppedImg: "+list_cropped_eye);
+                }
 
-//                cropToFrameTransform.mapRect(location);
-//
-//                result.setLocation(location);
-//                mappedRecognitions.add(result);
             }
         }
 
@@ -418,34 +411,20 @@ public class DetectionFragment extends Fragment {
             final Float confidence = gill_result.getConfidence();
             final int detectedClass = gill_result.getDetectedClass();
 
-//            if (imageTitle.equals("kepala")){
-//                Log.d(TAG, "handleResultLocation: "+location);
-//                Log.d(TAG, "handleResultTitle: "+imageTitle);
-//                Log.d(TAG, "handleResultConfidence: "+confidence);
-//                Log.d(TAG, "handleResultClass: "+detectedClass);
-//            }else{
-//                Log.d(TAG, "handleResult: Result not Kepala");
-//            }
-
             if (location != null && gill_result.getConfidence() >= MINIMUM_CONFIDENCE_TF_OD_API && gill_result.getTitle().equals("insang")) {
-                part_position += 1;
-                cropped_gill = ImageUtils.cropImage(bitmap_gill, getContext(), "cropped_fish_gill"+location+".jpg", location);
-                list_cropped_gill.add(cropped_gill);
-                Log.d(TAG, "handleResultLocation: "+location);
-                Log.d(TAG, "handleResultTitle: "+imageTitle);
-                Log.d(TAG, "handleResultConfidence: "+confidence);
-                Log.d(TAG, "handleResultClass: "+detectedClass);
-                Log.d(TAG, "handleResultCroppedImg: "+list_cropped_gill);
-                gill_canvas.drawRect(location, paint);
-                gill_canvas.drawText(imageTitle+" "+part_position+" | "+confidence, location.left, location.top-5f, textPaint);
-//                cropToFrameTransform.mapRect(location);
-//
-//                result.setLocation(location);
-//                mappedRecognitions.add(result);
+//                part_position += 1;
+                if (gill_result.getConfidence() > confidence_gill_max){
+                    confidence_gill_max = confidence;
+                    location_gill_max = location;
+                    Log.d(TAG, "handleResultLocation: "+location);
+                    Log.d(TAG, "handleResultTitle: "+imageTitle);
+                    Log.d(TAG, "handleResultConfidence: "+confidence);
+                    Log.d(TAG, "handleResultClass: "+detectedClass);
+                    Log.d(TAG, "handleResultCroppedImg: "+list_cropped_gill);
+                }
+
             }
         }
-//        tracker.trackResults(mappedRecognitions, new Random().nextInt());
-//        trackingOverlay.postInvalidate();
 
 
 //        bitmap_eye = ImageUtils.getBitmap(getContext(), cropped_eye);
@@ -458,6 +437,19 @@ public class DetectionFragment extends Fragment {
 //
 //        fish_image_slider.setAdapter(fishImageAdapter);
 
+        if (location_eye_max != null){
+            cropped_eye = ImageUtils.cropImage(bitmap_eye, getContext(), "cropped_fish_eye"+location_eye_max+".jpg", location_eye_max);
+            list_cropped_eye.add(cropped_eye);
+            eye_canvas.drawRect(location_eye_max, paint);
+            eye_canvas.drawText(confidence_eye_max.toString(), location_eye_max.left, location_eye_max.top-5f, textPaint);
+        }
+
+        if (location_gill_max != null){
+            cropped_gill = ImageUtils.cropImage(bitmap_gill, getContext(), "cropped_fish_gill"+location_gill_max+".jpg", location_gill_max);
+            list_cropped_gill.add(cropped_gill);
+            gill_canvas.drawRect(location_gill_max, paint);
+            gill_canvas.drawText(confidence_gill_max.toString(), location_gill_max.left, location_gill_max.top-5f, textPaint);
+        }
 
         fish_eye_uri = ImageUtils.saveImage(bitmap_eye, getContext(), "resized_fish_eye.jpg");
         fish_gill_uri = ImageUtils.saveImage(bitmap_gill, getContext(), "resized_fish_gill.jpg");
