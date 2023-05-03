@@ -287,10 +287,10 @@ public class ResultsFragment extends Fragment {
                 final_result.setText("Ikan Gurami masih dalam kondisi segar");
                 final_result.setVisibility(View.VISIBLE);
             }else if (list_part_classifier.get(0) == "eye-fresh" && list_part_classifier.get(1) != "gill-fresh"){
-                final_result.setText("Ikan Gurami sudah tidak segar karena kondisi insangnya");
+                final_result.setText("Ikan Gurami sudah tidak segar dilihat dari kondisi insangnya");
                 final_result.setVisibility(View.VISIBLE);
             }else if (list_part_classifier.get(0) != "eye-fresh" && list_part_classifier.get(1) == "gill-fresh"){
-                final_result.setText("Ikan Gurami sudah tidak segar karena kondisi matanya");
+                final_result.setText("Ikan Gurami sudah tidak segar dilihat dari kondisi matanya");
                 final_result.setVisibility(View.VISIBLE);
             }else if (list_part_classifier.get(0) != "eye-fresh" && list_part_classifier.get(1) != "gill-fresh"){
                 final_result.setText("Ikan Gurami sudah tidak segar sama sekali");
