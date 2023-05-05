@@ -284,7 +284,7 @@ public class ResultsFragment extends Fragment {
 
         if (list_part_classifier.size() == 2){
             if (list_part_classifier.get(0) == "eye-fresh" && list_part_classifier.get(1) == "gill-fresh"){
-                final_result.setText("Ikan Gurami masih dalam kondisi segar");
+                final_result.setText("Berdasarkan mata dan insang, Ikan Gurami masih dalam kondisi segar");
                 final_result.setVisibility(View.VISIBLE);
             }else if (list_part_classifier.get(0) == "eye-fresh" && list_part_classifier.get(1) != "gill-fresh"){
                 final_result.setText("Ikan Gurami sudah tidak segar dilihat dari kondisi insangnya");
