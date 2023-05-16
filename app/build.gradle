@@ -12,8 +12,8 @@ android {
         applicationId "com.uc.degura"
         minSdk 24
         targetSdk 33
-        versionCode 16
-        versionName "0.2.6-Beta"
+        versionCode 17
+        versionName "0.2.7-Beta"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

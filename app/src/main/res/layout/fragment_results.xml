@@ -139,7 +139,7 @@
             android:layout_marginBottom="16dp"
             android:fontFamily="@font/sansation"
             android:text="TextView"
-            android:textColor="@color/black"
+            android:textColor="?colorOnSecondary"
             android:textSize="18sp"
             android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/back_from_result"
