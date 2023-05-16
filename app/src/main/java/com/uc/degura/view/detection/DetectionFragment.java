@@ -196,55 +196,70 @@ public class DetectionFragment extends Fragment {
             progressDialog.getWindow().setBackgroundDrawableResource(R.color.transparent_black);
             progressDialog.getWindow().setGravity(Gravity.CENTER);
             progressDialog.show();
-            progressDialog.setOnDismissListener(dialog -> {
+            Handler handler = new Handler();
+            new Thread(() -> {
+                Log.d(TAG, "Recognize Fish Eye Bitmap Debug: "+fish_eye_bitmap.toString());
 
-                Handler handler = new Handler(Looper.getMainLooper()){
+                handler.postDelayed(new Runnable() {
                     @Override
-                    public void handleMessage(@NonNull Message msg) {
-                        super.handleMessage(msg);
-                        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
-                        alertBuilder.setTitle("Peringatan!");
-                        alertBuilder.setMessage("Spesifikasi smartphone Anda belum kompatibel untuk menjalankan aplikasi ini. Anda bisa menggunakan aplikasi Degura Lite.");
-                        alertBuilder.setCancelable(true);
-
-                        alertBuilder.setPositiveButton("Oke", (DialogInterface.OnClickListener) (dialog1, which) -> {
-                            NavDirections action;
-                            action = DetectionFragmentDirections.actionDetectionFragmentToFishEyeFragment();
-                            Navigation.findNavController(v).navigate(action);
-                        });
-
-                        // Create the Alert dialog
-                        AlertDialog alertDialog = alertBuilder.create();
-                        // Show the Alert Dialog box
-                        alertDialog.show();
-                    }
-                };
-
-                new Thread(() -> {
-                    Log.d(TAG, "Recognize Fish Eye Bitmap Debug: "+fish_eye_bitmap.toString());
-
-//                    try{
+                    public void run() {
                         final List<Classifier.Recognition> fish_eye_results = detector.recognizeImage(fish_eye_bitmap);
                         final List<Classifier.Recognition> fish_gill_results = detector.recognizeImage(fish_gill_bitmap);
                         handler.post(() -> handleResult(fish_eye_bitmap, fish_gill_bitmap, fish_eye_results, fish_gill_results));
-//                    }catch (Exception e){
-//                        e.printStackTrace();
-//                        Message message = handler.obtainMessage();
-//                        message.sendToTarget();
+                    }
+                }, 1000);
+
+            }).start();
+
+
+            new Handler().postDelayed(() -> progressDialog.dismiss(), 1500);
+//            progressDialog.setOnDismissListener(dialog -> {
+//
+//                Handler handler = new Handler(Looper.getMainLooper()){
+//                    @Override
+//                    public void handleMessage(@NonNull Message msg) {
+//                        super.handleMessage(msg);
+//                        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
+//                        alertBuilder.setTitle("Peringatan!");
+//                        alertBuilder.setMessage("Spesifikasi smartphone Anda belum kompatibel untuk menjalankan aplikasi ini. Anda bisa menggunakan aplikasi Degura Lite.");
+//                        alertBuilder.setCancelable(true);
+//
+//                        alertBuilder.setPositiveButton("Oke", (DialogInterface.OnClickListener) (dialog1, which) -> {
+//                            NavDirections action;
+//                            action = DetectionFragmentDirections.actionDetectionFragmentToFishEyeFragment();
+//                            Navigation.findNavController(v).navigate(action);
+//                        });
+//
+//                        // Create the Alert dialog
+//                        AlertDialog alertDialog = alertBuilder.create();
+//                        // Show the Alert Dialog box
+//                        alertDialog.show();
 //                    }
+//                };
+//
+//                new Thread(() -> {
+//                    Log.d(TAG, "Recognize Fish Eye Bitmap Debug: "+fish_eye_bitmap.toString());
+//
+////                    try{
+//                        final List<Classifier.Recognition> fish_eye_results = detector.recognizeImage(fish_eye_bitmap);
+//                        final List<Classifier.Recognition> fish_gill_results = detector.recognizeImage(fish_gill_bitmap);
+//                        handler.post(() -> handleResult(fish_eye_bitmap, fish_gill_bitmap, fish_eye_results, fish_gill_results));
+////                    }catch (Exception e){
+////                        e.printStackTrace();
+////                        Message message = handler.obtainMessage();
+////                        message.sendToTarget();
+////                    }
+//
+//                }).start();
+//            });
 
-                }).start();
-            });
-
-            new Handler().postDelayed(() -> progressDialog.dismiss(), 2500);
+//            new Handler().postDelayed(() -> progressDialog.dismiss(), 1000);
 
             fish_eye_bitmap = Utils.processBitmap(fish_eye_bitmap, TF_OD_API_INPUT_SIZE);
 
             fish_gill_bitmap = Utils.processBitmap(fish_gill_bitmap, TF_OD_API_INPUT_SIZE);
 
             initBox();
-
-
 
         });
 
