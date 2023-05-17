@@ -200,13 +200,10 @@ public class DetectionFragment extends Fragment {
             new Thread(() -> {
                 Log.d(TAG, "Recognize Fish Eye Bitmap Debug: "+fish_eye_bitmap.toString());
 
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        final List<Classifier.Recognition> fish_eye_results = detector.recognizeImage(fish_eye_bitmap);
-                        final List<Classifier.Recognition> fish_gill_results = detector.recognizeImage(fish_gill_bitmap);
-                        handler.post(() -> handleResult(fish_eye_bitmap, fish_gill_bitmap, fish_eye_results, fish_gill_results));
-                    }
+                handler.postDelayed(() -> {
+                    final List<Classifier.Recognition> fish_eye_results = detector.recognizeImage(fish_eye_bitmap);
+                    final List<Classifier.Recognition> fish_gill_results = detector.recognizeImage(fish_gill_bitmap);
+                    handler.post(() -> handleResult(fish_eye_bitmap, fish_gill_bitmap, fish_eye_results, fish_gill_results));
                 }, 1000);
 
             }).start();
@@ -394,9 +391,6 @@ public class DetectionFragment extends Fragment {
         final Paint textPaint = new Paint();
         textPaint.setColor(Color.RED);
         textPaint.setTextSize(16);
-
-        final List<Classifier.Recognition> mappedRecognitions =
-                new LinkedList<Classifier.Recognition>();
 
         for (final Classifier.Recognition eye_result : eye_results) {
             final RectF location = eye_result.getLocation();
