@@ -43,40 +43,19 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class FishGillFragment extends Fragment {
 
-    @BindView(R.id.fish_gill_slider)
     ViewPager2 fish_gill_slider;
-
-    @BindView(R.id.gill_page1)
     ImageView slider1;
-
-    @BindView(R.id.gill_page2)
     ImageView slider2;
-
-    @BindView(R.id.gill_page3)
     ImageView slider3;
-
-    @BindView(R.id.gill_page4)
     ImageView slider4;
-
-    @BindView(R.id.gill_page5)
     ImageView slider5;
-
-    private FishGillAdapter fishGillAdapter;
-
-    @BindView(R.id.btn_camera_gill)
     Button btn_camera_gill;
-
-    @BindView(R.id.btn_gallery_gill)
     Button btn_gallery_gill;
-
-    @BindView(R.id.btn_back_gill)
     Button btn_back_gill;
 
+    private FishGillAdapter fishGillAdapter;
 
     private static final String TAG = "FishGillFragment";
 
@@ -94,7 +73,15 @@ public class FishGillFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        fish_gill_slider = view.findViewById(R.id.fish_gill_slider);
+        slider1 = view.findViewById(R.id.gill_page1);
+        slider2 = view.findViewById(R.id.gill_page2);
+        slider3 = view.findViewById(R.id.gill_page3);
+        slider4 = view.findViewById(R.id.gill_page4);
+        slider5 = view.findViewById(R.id.gill_page5);
+        btn_camera_gill = view.findViewById(R.id.btn_camera_gill);
+        btn_gallery_gill = view.findViewById(R.id.btn_gallery_gill);
+        btn_back_gill = view.findViewById(R.id.btn_back_gill);
 
         InstructionNote instruction1 = new InstructionNote(0, "", "Swipe ke kiri untuk membaca petunjuk cara mengambil gambar insang ikan Gurami");
         InstructionNote instruction2 = new InstructionNote(R.drawable.slide_insang_1, "Ambil gambar insang dari ikan Gurami yang sama dengan jarak ideal dari kamera", "");

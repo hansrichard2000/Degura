@@ -57,29 +57,15 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class DetectionFragment extends Fragment {
 
     public static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.55f;
 
-    @BindView(R.id.page1)
     ImageView slider1;
-
-    @BindView(R.id.page2)
     ImageView slider2;
-
-    @BindView(R.id.fish_image_slider)
     ViewPager2 fish_image_slider;
-
-    @BindView(R.id.fish_image_txt)
     TextView fish_image_txt;
-
-    @BindView(R.id.btn_detect)
     Button btn_detect;
-
-    @BindView(R.id.btn_delete_img)
     Button btn_delete_img;
 
     Dialog progressDialog;
@@ -146,7 +132,12 @@ public class DetectionFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        slider1 = view.findViewById(R.id.page1);
+        slider2 = view.findViewById(R.id.page2);
+        fish_image_slider = view.findViewById(R.id.fish_image_slider);
+        fish_image_txt = view.findViewById(R.id.fish_image_txt);
+        btn_detect = view.findViewById(R.id.btn_detect);
+        btn_delete_img = view.findViewById(R.id.btn_delete_img);
 
         fish_eye_uri = getArguments().getParcelable("fish_eye");
         fish_gill_uri = getArguments().getParcelable("fish_gill");

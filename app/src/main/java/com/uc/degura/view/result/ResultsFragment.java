@@ -52,30 +52,14 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class ResultsFragment extends Fragment {
 
-    @BindView(R.id.result_image_txt)
     TextView result_image_txt;
-
-    @BindView(R.id.final_result)
     TextView final_result;
-
-    @BindView(R.id.page1result)
     ImageView page1result;
-
-    @BindView(R.id.page2result)
     ImageView page2result;
-
-    @BindView(R.id.back_from_result)
     Button back_from_result;
-
-    @BindView(R.id.view_pager_result)
     ViewPager2 view_pager_result;
-
-    @BindView(R.id.recycler_fish_freshness)
     RecyclerView recyclerView;
 
     String classifyResult;
@@ -129,7 +113,14 @@ public class ResultsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+
+        result_image_txt = view.findViewById(R.id.result_image_txt);
+        final_result = view.findViewById(R.id.final_result);
+        page1result = view.findViewById(R.id.page1result);
+        page2result = view.findViewById(R.id.page2result);
+        back_from_result = view.findViewById(R.id.back_from_result);
+        view_pager_result = view.findViewById(R.id.view_pager_result);
+        recyclerView = view.findViewById(R.id.recycler_fish_freshness);
 
         detectedImage = getArguments().getParcelable("detected_images");
 

@@ -46,33 +46,22 @@ import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class FishEyeFragment extends Fragment {
 
-    @BindView(R.id.btn_camera_eye)
     Button btn_camera_eye;
 
-    @BindView(R.id.btn_gallery_eye)
     Button btn_gallery_eye;
 
-    @BindView(R.id.fish_eye_slider)
     ViewPager2 fish_eye_slider;
 
-    @BindView(R.id.eye_page1)
     ImageView slider1;
 
-    @BindView(R.id.eye_page2)
     ImageView slider2;
 
-    @BindView(R.id.eye_page3)
     ImageView slider3;
 
-    @BindView(R.id.eye_page4)
     ImageView slider4;
 
-    @BindView(R.id.eye_page5)
     ImageView slider5;
 
     private FishEyeAdapter fishEyeAdapter;
@@ -118,7 +107,15 @@ public class FishEyeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+
+        btn_camera_eye = view.findViewById(R.id.btn_camera_eye);
+        btn_gallery_eye = view.findViewById(R.id.btn_gallery_eye);
+        fish_eye_slider = view.findViewById(R.id.fish_eye_slider);
+        slider1 = view.findViewById(R.id.eye_page1);
+        slider2 = view.findViewById(R.id.eye_page2);
+        slider3 = view.findViewById(R.id.eye_page3);
+        slider4 = view.findViewById(R.id.eye_page4);
+        slider5 = view.findViewById(R.id.eye_page5);
 
         InstructionNote instruction1 = new InstructionNote(0, "", "Swipe ke kiri untuk membaca petunjuk cara mengambil gambar mata ikan Gurami");
         InstructionNote instruction2 = new InstructionNote(R.drawable.slide_mata_1, "Pastikan gambar yang diambil adalah gambar sebuah mata ikan Gurami.", "");
